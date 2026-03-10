@@ -1,0 +1,467 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+
+		A3376F4DB7508201ECA2AB14 /* AnimatedCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7BAAE7E08B0BECCDEB9C86 /* AnimatedCounter.swift */; };
+		D3E5F97E1B038A5BF3610677 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7069384ACD2AA0318BD7BCE1 /* ConfettiView.swift */; };
+		E6BCC214801048AC9BAF299A /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9616780AE4EB4FF00F8B1EA2 /* CustomTabBar.swift */; };
+		51CA285656A07854EDB586E7 /* GlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA7BE0D17D467DC4899A8FD /* GlassCard.swift */; };
+		C008D798AD37332B81882AA1 /* PastelGradients.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3EB7F079C445EF55F51ECF /* PastelGradients.swift */; };
+		FD1989A9ACCCCE6FB6C4DF68 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345EBF4DB7B3FDD3CFA39887 /* ContentView.swift */; };
+		9F7E57F17B74C8B1DC263135 /* Color+Pastels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B2DE8174CC10AD6B7A920F /* Color+Pastels.swift */; };
+		586456EA8F2A834C30A865DD /* View+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2E23295B53865F4736A68F /* View+Animations.swift */; };
+		7167E247FE4026EA68456053 /* QuizEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B574F21EC76E6A794A084CE /* QuizEngine.swift */; };
+		DB7B69FAD026A26CA73207FE /* SpacedRepetition.swift in Sources */ = {isa = PBXBuildFile; fileRef = D145A3433D96F32883A18F32 /* SpacedRepetition.swift */; };
+		CE00EC282C6AC7AC3C886617 /* Word.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C056093C3767B9CE32C528A /* Word.swift */; };
+		26F85D2F4F0989118562C6C9 /* WordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCB77ECB0AB7E0527279B84 /* WordStore.swift */; };
+		6A32E92D2182E4E669F5E137 /* WordListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50DF74EEB863DE82D59A060 /* WordListView.swift */; };
+		04FDFBE1C759DB401AE7C8E1 /* CardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFE487CC96B7B87C94558A1 /* CardDetailView.swift */; };
+		AEBAEDF2356CBFEFC66C2A05 /* CardStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5647B3896FA7DCEA339CD6DE /* CardStackView.swift */; };
+		45AA37BEEB68FEE4384EC484 /* FlashCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C949DA6FC1D5E26052AB50C /* FlashCardView.swift */; };
+		0DE09D7B942C13B3813D8988 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AB4338A36FA0AF7ADE92FE /* DashboardView.swift */; };
+		9850C4D655B8793C4488C0CD /* QuizResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0452805C30F7A0911721691 /* QuizResultsView.swift */; };
+		D802D5E80F3D765307BE4071 /* QuizView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C277F3BF17B6D77D00798A /* QuizView.swift */; };
+		3BFE6FBE219608708A770D17 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8519ED0F271DEC2A5A7E857 /* SettingsView.swift */; };
+		C58A04CFA18F37F531263496 /* VocabVaultApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356EF81F88C5C4B049ED78CA /* VocabVaultApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2544E5B1E7659A7BA6F06444 /* VocabVault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VocabVault.app; sourceTree = BUILT_PRODUCTS_DIR; };
+
+		9B7BAAE7E08B0BECCDEB9C86 /* AnimatedCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedCounter.swift; sourceTree = "<group>"; };
+		7069384ACD2AA0318BD7BCE1 /* ConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiView.swift; sourceTree = "<group>"; };
+		9616780AE4EB4FF00F8B1EA2 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
+		BEA7BE0D17D467DC4899A8FD /* GlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassCard.swift; sourceTree = "<group>"; };
+		DC3EB7F079C445EF55F51ECF /* PastelGradients.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastelGradients.swift; sourceTree = "<group>"; };
+		345EBF4DB7B3FDD3CFA39887 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		34B2DE8174CC10AD6B7A920F /* Color+Pastels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color+Pastels.swift; sourceTree = "<group>"; };
+		EA2E23295B53865F4736A68F /* View+Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View+Animations.swift; sourceTree = "<group>"; };
+		7B574F21EC76E6A794A084CE /* QuizEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizEngine.swift; sourceTree = "<group>"; };
+		D145A3433D96F32883A18F32 /* SpacedRepetition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacedRepetition.swift; sourceTree = "<group>"; };
+		9C056093C3767B9CE32C528A /* Word.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Word.swift; sourceTree = "<group>"; };
+		5CCB77ECB0AB7E0527279B84 /* WordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordStore.swift; sourceTree = "<group>"; };
+		B50DF74EEB863DE82D59A060 /* WordListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordListView.swift; sourceTree = "<group>"; };
+		4DFE487CC96B7B87C94558A1 /* CardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDetailView.swift; sourceTree = "<group>"; };
+		5647B3896FA7DCEA339CD6DE /* CardStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStackView.swift; sourceTree = "<group>"; };
+		3C949DA6FC1D5E26052AB50C /* FlashCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashCardView.swift; sourceTree = "<group>"; };
+		42AB4338A36FA0AF7ADE92FE /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		C0452805C30F7A0911721691 /* QuizResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizResultsView.swift; sourceTree = "<group>"; };
+		14C277F3BF17B6D77D00798A /* QuizView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizView.swift; sourceTree = "<group>"; };
+		A8519ED0F271DEC2A5A7E857 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		356EF81F88C5C4B049ED78CA /* VocabVaultApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabVaultApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A9E872B0C4F3AB11D258C39F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0A85897F1A32FE9B91C081CD = {
+			isa = PBXGroup;
+			children = (
+				1369CE758DE91ECD50B7E938 /* VocabVault */,
+				3A4968D2D3C06AA826EDC19E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3A4968D2D3C06AA826EDC19E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2544E5B1E7659A7BA6F06444 /* VocabVault.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1369CE758DE91ECD50B7E938 /* VocabVault */ = {
+			isa = PBXGroup;
+			children = (
+			B0D194E680229EC86D74432D /* Components */,
+			345EBF4DB7B3FDD3CFA39887 /* ContentView.swift */,
+			3BE1FBAE1BF2E816F4A00255 /* Extensions */,
+			BC8E6A5FDB0FEE50AF1B10E7 /* Models */,
+			F867080DDDCAA8CC74A91BE2 /* Views */,
+			356EF81F88C5C4B049ED78CA /* VocabVaultApp.swift */,
+			);
+			path = VocabVault;
+			sourceTree = "<group>";
+		};
+
+		B0D194E680229EC86D74432D /* Components */ = {
+			isa = PBXGroup;
+			children = (
+			9B7BAAE7E08B0BECCDEB9C86 /* AnimatedCounter.swift */,
+			7069384ACD2AA0318BD7BCE1 /* ConfettiView.swift */,
+			9616780AE4EB4FF00F8B1EA2 /* CustomTabBar.swift */,
+			BEA7BE0D17D467DC4899A8FD /* GlassCard.swift */,
+			DC3EB7F079C445EF55F51ECF /* PastelGradients.swift */,
+			);
+			name = Components;
+			sourceTree = "<group>";
+		};
+
+
+		3BE1FBAE1BF2E816F4A00255 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			34B2DE8174CC10AD6B7A920F /* Color+Pastels.swift */,
+			EA2E23295B53865F4736A68F /* View+Animations.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
+
+
+		BC8E6A5FDB0FEE50AF1B10E7 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			7B574F21EC76E6A794A084CE /* QuizEngine.swift */,
+			D145A3433D96F32883A18F32 /* SpacedRepetition.swift */,
+			9C056093C3767B9CE32C528A /* Word.swift */,
+			5CCB77ECB0AB7E0527279B84 /* WordStore.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+
+
+		F867080DDDCAA8CC74A91BE2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			22EA0EBA0E78AA0E9AA38E4E /* Browse */,
+			F711880A871CC5794694009C /* Cards */,
+			512819E900B599431DEAFE91 /* Home */,
+			115A1DBBDA9606E6679F9516 /* Quiz */,
+			87C70582996E9ED1DE66C380 /* Settings */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+
+		22EA0EBA0E78AA0E9AA38E4E /* Browse */ = {
+			isa = PBXGroup;
+			children = (
+			B50DF74EEB863DE82D59A060 /* WordListView.swift */,
+			);
+			name = Browse;
+			sourceTree = "<group>";
+		};
+
+
+		F711880A871CC5794694009C /* Cards */ = {
+			isa = PBXGroup;
+			children = (
+			4DFE487CC96B7B87C94558A1 /* CardDetailView.swift */,
+			5647B3896FA7DCEA339CD6DE /* CardStackView.swift */,
+			3C949DA6FC1D5E26052AB50C /* FlashCardView.swift */,
+			);
+			name = Cards;
+			sourceTree = "<group>";
+		};
+
+
+		512819E900B599431DEAFE91 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+			42AB4338A36FA0AF7ADE92FE /* DashboardView.swift */,
+			);
+			name = Home;
+			sourceTree = "<group>";
+		};
+
+
+		115A1DBBDA9606E6679F9516 /* Quiz */ = {
+			isa = PBXGroup;
+			children = (
+			C0452805C30F7A0911721691 /* QuizResultsView.swift */,
+			14C277F3BF17B6D77D00798A /* QuizView.swift */,
+			);
+			name = Quiz;
+			sourceTree = "<group>";
+		};
+
+
+		87C70582996E9ED1DE66C380 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+			A8519ED0F271DEC2A5A7E857 /* SettingsView.swift */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
+
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		730950AD798A77AD508AA9E2 /* VocabVault */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 93361C16B22AB4A958E8E9A0 /* Build configuration list for PBXNativeTarget "VocabVault" */;
+			buildPhases = (
+				7EE609159AC086BAB15FF998 /* Sources */,
+				A9E872B0C4F3AB11D258C39F /* Frameworks */,
+				A2892AFC2D88060C0AA91373 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VocabVault;
+			productName = VocabVault;
+			productReference = 2544E5B1E7659A7BA6F06444 /* VocabVault.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1781F676DEDF5767F3243DB0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					730950AD798A77AD508AA9E2 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 53FB9950D34DA8F8070E8A2D /* Build configuration list for PBXProject "VocabVault" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 0A85897F1A32FE9B91C081CD;
+			productRefGroup = 3A4968D2D3C06AA826EDC19E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				730950AD798A77AD508AA9E2 /* VocabVault */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A2892AFC2D88060C0AA91373 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7EE609159AC086BAB15FF998 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3376F4DB7508201ECA2AB14 /* AnimatedCounter.swift in Sources */,				D3E5F97E1B038A5BF3610677 /* ConfettiView.swift in Sources */,				E6BCC214801048AC9BAF299A /* CustomTabBar.swift in Sources */,				51CA285656A07854EDB586E7 /* GlassCard.swift in Sources */,				C008D798AD37332B81882AA1 /* PastelGradients.swift in Sources */,				FD1989A9ACCCCE6FB6C4DF68 /* ContentView.swift in Sources */,				9F7E57F17B74C8B1DC263135 /* Color+Pastels.swift in Sources */,				586456EA8F2A834C30A865DD /* View+Animations.swift in Sources */,				7167E247FE4026EA68456053 /* QuizEngine.swift in Sources */,				DB7B69FAD026A26CA73207FE /* SpacedRepetition.swift in Sources */,				CE00EC282C6AC7AC3C886617 /* Word.swift in Sources */,				26F85D2F4F0989118562C6C9 /* WordStore.swift in Sources */,				6A32E92D2182E4E669F5E137 /* WordListView.swift in Sources */,				04FDFBE1C759DB401AE7C8E1 /* CardDetailView.swift in Sources */,				AEBAEDF2356CBFEFC66C2A05 /* CardStackView.swift in Sources */,				45AA37BEEB68FEE4384EC484 /* FlashCardView.swift in Sources */,				0DE09D7B942C13B3813D8988 /* DashboardView.swift in Sources */,				9850C4D655B8793C4488C0CD /* QuizResultsView.swift in Sources */,				D802D5E80F3D765307BE4071 /* QuizView.swift in Sources */,				3BFE6FBE219608708A770D17 /* SettingsView.swift in Sources */,				C58A04CFA18F37F531263496 /* VocabVaultApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		075A3F45448538490E577636 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSET_CATALOG_COMPILER_OPTIMIZATION = space;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_EXCEPTION = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		9E4B6119718769058EA9DAB2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSET_CATALOG_COMPILER_OPTIMIZATION = space;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_EXCEPTION = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C5C1CC7E09DDA6FA0D5A473E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSTEROID_CATALOG_APP_ICON_NAME = AppIcon;
+				ASSET_CATALOG_APP_ICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LE_SWIFT_VERSION = 5.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vocabvault.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3DF54B37DD809C22D4CD2641 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSET_CATALOG_APP_ICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LE_SWIFT_VERSION = 5.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vocabvault.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		53FB9950D34DA8F8070E8A2D /* Build configuration list for PBXProject "VocabVault" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				075A3F45448538490E577636 /* Debug */,
+				9E4B6119718769058EA9DAB2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		93361C16B22AB4A958E8E9A0 /* Build configuration list for PBXNativeTarget "VocabVault" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C5C1CC7E09DDA6FA0D5A473E /* Debug */,
+				3DF54B37DD809C22D4CD2641 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1781F676DEDF5767F3243DB0 /* Project object */;
+}
