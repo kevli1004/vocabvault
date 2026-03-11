@@ -1,6 +1,7 @@
 import SwiftUI
 
 // MARK: - Quiz View
+// Cream background. Typography-forward. Clean answer options.
 
 struct QuizView: View {
     @EnvironmentObject var store: WordStore
@@ -9,7 +10,6 @@ struct QuizView: View {
     @State private var showFeedback = false
     @State private var isCorrect = false
     @State private var quizConfig = QuizConfig()
-    @State private var showConfig = false
     @State private var cardOffset: CGFloat = 0
     @State private var cardOpacity: Double = 1
 
@@ -21,7 +21,7 @@ struct QuizView: View {
 
     var body: some View {
         ZStack {
-            AnimatedGradientBackground()
+            AppTheme.background.ignoresSafeArea()
 
             if let s = session {
                 if s.isComplete {
@@ -31,102 +31,136 @@ struct QuizView: View {
                     .transition(.move(edge: .trailing).combined(with: .opacity))
                 } else {
                     quizContent(session: s)
+                        .transition(.opacity)
                 }
             } else {
                 quizSetupView
+                    .transition(.opacity)
             }
         }
+        .animation(.easeInOut(duration: 0.25), value: session?.isComplete)
     }
 
     // MARK: - Setup Screen
 
     private var quizSetupView: some View {
-        VStack(spacing: 28) {
+        VStack(alignment: .leading, spacing: 0) {
             // Header
-            VStack(spacing: 8) {
-                Text("🧠")
-                    .font(.system(size: 60))
-                    .floating()
-                Text("Quiz Mode")
-                    .font(.system(size: 36, weight: .black, design: .rounded))
-                    .foregroundColor(.white)
-                Text("Test your vocabulary knowledge")
-                    .font(.system(size: 16, weight: .medium, design: .rounded))
-                    .foregroundColor(.white.opacity(0.6))
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Quiz")
+                    .font(.system(size: 36, weight: .bold))
+                    .foregroundColor(AppTheme.text)
+                Text("Test your vocabulary")
+                    .font(.system(size: 16, weight: .regular))
+                    .foregroundColor(AppTheme.textSecondary)
             }
-            .padding(.top, 40)
+            .padding(.horizontal, 28)
+            .padding(.top, 64)
+            .padding(.bottom, 32)
 
-            // Config card
-            GlassCard(cornerRadius: 24, padding: 24, opacity: 0.1) {
-                VStack(spacing: 20) {
-                    // Question count
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Questions")
-                            .font(.system(size: 14, weight: .bold, design: .rounded))
-                            .foregroundColor(.white.opacity(0.7))
-                        HStack(spacing: 10) {
-                            ForEach([5, 10, 15, 20], id: \.self) { count in
-                                Button("\(count)") {
-                                    quizConfig.questionCount = count
-                                }
-                                .font(.system(size: 16, weight: .bold, design: .rounded))
-                                .foregroundColor(quizConfig.questionCount == count ? .white : .white.opacity(0.45))
-                                .frame(width: 56, height: 44)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                        .fill(quizConfig.questionCount == count ? LinearGradient.pastelGradient(for: .coral) : LinearGradient(colors: [Color.white.opacity(0.1)], startPoint: .top, endPoint: .bottom))
-                                )
+            MinimalDivider()
+
+            // Configuration
+            VStack(spacing: 0) {
+                // Question count
+                VStack(alignment: .leading, spacing: 14) {
+                    Text("Questions")
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .foregroundColor(AppTheme.textTertiary)
+                        .kerning(1.2)
+
+                    HStack(spacing: 10) {
+                        ForEach([5, 10, 15, 20], id: \.self) { count in
+                            Button {
+                                quizConfig.questionCount = count
+                            } label: {
+                                Text("\(count)")
+                                    .font(.system(size: 17, weight: quizConfig.questionCount == count ? .semibold : .regular))
+                                    .foregroundColor(quizConfig.questionCount == count ? AppTheme.text : AppTheme.textTertiary)
+                                    .frame(width: 58, height: 44)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                            .fill(quizConfig.questionCount == count ? AppTheme.surface : Color.clear)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                                    .strokeBorder(
+                                                        quizConfig.questionCount == count ? AppTheme.border : AppTheme.separator,
+                                                        lineWidth: 1
+                                                    )
+                                            )
+                                    )
                             }
+                            .buttonStyle(.plain)
+                            .animation(.easeOut(duration: 0.15), value: quizConfig.questionCount)
                         }
                     }
-
-                    Divider().background(Color.white.opacity(0.1))
-
-                    // Only due
-                    Toggle(isOn: $quizConfig.onlyDue) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Focus on due words")
-                                .font(.system(size: 14, weight: .semibold, design: .rounded))
-                                .foregroundColor(.white)
-                            Text("Only quiz words scheduled for review")
-                                .font(.system(size: 12, design: .rounded))
-                                .foregroundColor(.white.opacity(0.5))
-                        }
-                    }
-                    .tint(.gradTeal1)
                 }
+                .padding(.horizontal, 28)
+                .padding(.vertical, 24)
+
+                MinimalDivider()
+
+                // Focus on due
+                Toggle(isOn: $quizConfig.onlyDue) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Focus on due words")
+                            .font(.system(size: 15, weight: .regular))
+                            .foregroundColor(AppTheme.text)
+                        Text("Only quiz words scheduled for review")
+                            .font(.system(size: 13))
+                            .foregroundColor(AppTheme.textTertiary)
+                    }
+                }
+                .tint(AppTheme.text)
+                .padding(.horizontal, 28)
+                .padding(.vertical, 20)
             }
-            .padding(.horizontal, 24)
+
+            MinimalDivider()
 
             // Stats preview
-            HStack(spacing: 20) {
-                QuizStatPreview(label: "Available", value: "\(wordsAvailable)", icon: "books.vertical.fill", color: .gradPurple1)
-                QuizStatPreview(label: "Mastered", value: "\(store.totalMastered)", icon: "star.fill", color: .gradAmber1)
-                QuizStatPreview(label: "Due Now", value: "\(store.dueCount)", icon: "clock.fill", color: .gradCoral1)
+            HStack(spacing: 0) {
+                statPreview(value: "\(wordsAvailable)", label: "Available")
+                Spacer()
+                statPreview(value: "\(store.totalMastered)", label: "Mastered")
+                Spacer()
+                statPreview(value: "\(store.dueCount)", label: "Due Now")
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, 36)
+            .padding(.vertical, 24)
+
+            MinimalDivider()
 
             Spacer()
 
-            // Start button
+            // Start CTA
             Button(action: startQuiz) {
-                HStack(spacing: 10) {
-                    Image(systemName: "play.fill")
-                    Text("Start Quiz")
-                }
-                .font(.system(size: 20, weight: .black, design: .rounded))
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 18)
-                .background(
-                    Capsule()
-                        .fill(LinearGradient.pastelGradient(for: .coral))
-                )
-                .shadow(color: .gradCoral2.opacity(0.5), radius: 16, x: 0, y: 8)
-                .padding(.horizontal, 32)
+                Text("Begin Quiz")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(AppTheme.text)
+                    )
             }
-            .bouncyAppear()
-            .padding(.bottom, 40)
+            .buttonStyle(.plain)
+            .padding(.horizontal, 28)
+            .padding(.bottom, 48)
+        }
+    }
+
+    private func statPreview(value: String, label: String) -> some View {
+        VStack(spacing: 4) {
+            Text(value)
+                .font(.system(size: 28, weight: .bold))
+                .foregroundColor(AppTheme.text)
+                .monospacedDigit()
+            Text(label.uppercased())
+                .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
+                .kerning(0.8)
         }
     }
 
@@ -139,22 +173,22 @@ struct QuizView: View {
     @ViewBuilder
     private func quizContent(session: QuizEngine.QuizSession) -> some View {
         VStack(spacing: 0) {
-            // Header
             quizHeader(session: session)
 
-            Spacer()
+            Spacer(minLength: 24)
 
-            // Question card
             if let question = session.currentQuestion {
-                questionCard(question: question, session: session)
-                    .padding(.horizontal, 20)
+                questionContent(question: question, session: session)
+                    .padding(.horizontal, 24)
                     .offset(y: cardOffset)
                     .opacity(cardOpacity)
             }
 
-            Spacer()
+            Spacer(minLength: 32)
         }
     }
+
+    // MARK: - Quiz Header
 
     private func quizHeader(session: QuizEngine.QuizSession) -> some View {
         VStack(spacing: 12) {
@@ -162,111 +196,119 @@ struct QuizView: View {
                 Button {
                     self.session = nil
                 } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 24))
-                        .foregroundColor(.white.opacity(0.5))
+                    Image(systemName: "xmark")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(AppTheme.textSecondary)
+                        .frame(width: 36, height: 36)
+                        .background(Circle().fill(AppTheme.surface).overlay(Circle().strokeBorder(AppTheme.border, lineWidth: 1)))
                 }
+                .buttonStyle(.plain)
 
                 Spacer()
 
-                Text("\(session.currentIndex + 1) / \(session.totalQuestions)")
-                    .font(.system(size: 15, weight: .bold, design: .rounded))
-                    .foregroundColor(.white.opacity(0.7))
+                Text("\(session.currentIndex + 1) of \(session.totalQuestions)")
+                    .font(.system(size: 13, weight: .regular, design: .monospaced))
+                    .foregroundColor(AppTheme.textSecondary)
 
                 Spacer()
 
-                // Score
-                HStack(spacing: 4) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.swipeRight)
+                // Score indicator
+                HStack(spacing: 5) {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(AppTheme.success)
                     Text("\(session.score)")
-                        .font(.system(size: 15, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
+                        .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                        .foregroundColor(AppTheme.text)
                 }
+                .frame(width: 36)
             }
             .padding(.horizontal, 24)
-            .padding(.top, 16)
+            .padding(.top, 56)
 
             // Progress bar
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 4, style: .continuous)
-                        .fill(Color.white.opacity(0.1))
-                    RoundedRectangle(cornerRadius: 4, style: .continuous)
-                        .fill(LinearGradient(colors: [.gradCoral1, .gradAmber1], startPoint: .leading, endPoint: .trailing))
-                        .frame(width: geo.size.width * session.progress)
-                        .animation(.spring(response: 0.5), value: session.progress)
-                }
-            }
-            .frame(height: 5)
+            ThinProgressBar(
+                current: session.currentIndex,
+                total: session.totalQuestions,
+                height: 1.5
+            )
             .padding(.horizontal, 24)
         }
     }
 
+    // MARK: - Question Content
+
     @ViewBuilder
-    private func questionCard(question: QuizEngine.Question, session: QuizEngine.QuizSession) -> some View {
-        VStack(spacing: 20) {
-            // Question type badge
-            Text(questionTypeBadge(question.type))
-                .font(.system(size: 12, weight: .bold, design: .rounded))
-                .foregroundColor(.white.opacity(0.5))
+    private func questionContent(question: QuizEngine.Question, session: QuizEngine.QuizSession) -> some View {
+        VStack(alignment: .leading, spacing: 28) {
+            // Type label
+            Text(questionTypeLabel(question.type))
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
                 .kerning(1.2)
 
             // Prompt
-            GlassCard(cornerRadius: 24, padding: 24, opacity: 0.12) {
-                Text(question.prompt)
-                    .font(.system(size: 18, weight: .semibold, design: .rounded))
-                    .foregroundColor(.white)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-                    .lineSpacing(4)
-            }
+            Text(question.prompt)
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundColor(AppTheme.text)
+                .lineSpacing(4)
+                .fixedSize(horizontal: false, vertical: true)
 
-            // Answer choices
-            VStack(spacing: 12) {
+            MinimalDivider()
+
+            // Answer options
+            VStack(spacing: 10) {
                 ForEach(Array(question.choices.enumerated()), id: \.offset) { idx, choice in
-                    AnswerButton(
+                    QuizAnswerButton(
                         text: choice,
                         index: idx,
-                        state: answerState(for: choice, question: question),
-                        onTap: {
-                            guard !showFeedback else { return }
-                            submitAnswer(choice, question: question)
-                        }
-                    )
+                        state: answerState(for: choice, question: question)
+                    ) {
+                        guard !showFeedback else { return }
+                        submitAnswer(choice, question: question)
+                    }
                 }
             }
 
-            // Feedback
+            // Feedback strip
             if showFeedback {
-                feedbackView(isCorrect: isCorrect, correctAnswer: question.correctAnswer)
+                feedbackStrip(isCorrect: isCorrect, correctAnswer: question.correctAnswer)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
     }
 
-    private func answerState(for choice: String, question: QuizEngine.Question) -> AnswerButton.AnswerState {
+    private func feedbackStrip(isCorrect: Bool, correctAnswer: String) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: isCorrect ? "checkmark" : "xmark")
+                .font(.system(size: 12, weight: .bold))
+                .foregroundColor(isCorrect ? AppTheme.success : AppTheme.error)
+                .frame(width: 24, height: 24)
+                .background(Circle().fill(isCorrect ? AppTheme.success.opacity(0.12) : AppTheme.error.opacity(0.12)))
+
+            Text(isCorrect ? "Correct" : "Correct answer: \(correctAnswer)")
+                .font(.system(size: 14, weight: .regular))
+                .foregroundColor(isCorrect ? AppTheme.success : AppTheme.error)
+
+            Spacer()
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(isCorrect ? AppTheme.success.opacity(0.08) : AppTheme.error.opacity(0.08))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .strokeBorder(isCorrect ? AppTheme.success.opacity(0.2) : AppTheme.error.opacity(0.2), lineWidth: 1)
+                )
+        )
+    }
+
+    private func answerState(for choice: String, question: QuizEngine.Question) -> QuizAnswerButton.AnswerState {
         guard showFeedback else { return .neutral }
         if choice == question.correctAnswer { return .correct }
         if choice == selectedAnswer && !isCorrect { return .incorrect }
-        return .neutral
-    }
-
-    private func feedbackView(isCorrect: Bool, correctAnswer: String) -> some View {
-        HStack(spacing: 10) {
-            Image(systemName: isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill")
-                .font(.system(size: 22))
-                .foregroundColor(isCorrect ? .swipeRight : .swipeLeft)
-            Text(isCorrect ? "Correct! 🎉" : "Correct: \(correctAnswer)")
-                .font(.system(size: 15, weight: .bold, design: .rounded))
-                .foregroundColor(isCorrect ? .swipeRight : .swipeLeft)
-            Spacer()
-        }
-        .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill((isCorrect ? Color.swipeRight : Color.swipeLeft).opacity(0.12))
-        )
-        .transition(.move(edge: .bottom).combined(with: .opacity))
+        return .dimmed
     }
 
     // MARK: - Actions
@@ -278,31 +320,24 @@ struct QuizView: View {
             count: min(quizConfig.questionCount, words.count),
             questionTypes: Array(quizConfig.types)
         )
-        withAnimation(.spring()) {
-            session = newSession
-        }
+        withAnimation(.easeOut(duration: 0.25)) { session = newSession }
     }
 
     private func submitAnswer(_ answer: String, question: QuizEngine.Question) {
         selectedAnswer = answer
         isCorrect = answer == question.correctAnswer
 
-        let impact = UIImpactFeedbackGenerator(style: isCorrect ? .light : .medium)
-        impact.impactOccurred()
+        UIImpactFeedbackGenerator(style: isCorrect ? .light : .medium).impactOccurred()
 
-        withAnimation(.spring()) {
-            showFeedback = true
-        }
+        withAnimation(.easeOut(duration: 0.2)) { showFeedback = true }
 
-        // Update store
         if isCorrect {
             store.markCorrect(wordId: question.word.id)
         } else {
             store.markIncorrect(wordId: question.word.id)
         }
 
-        // Advance after delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             advanceQuestion(answer)
         }
     }
@@ -310,9 +345,8 @@ struct QuizView: View {
     private func advanceQuestion(_ answer: String) {
         guard var s = session else { return }
 
-        // Animate out
-        withAnimation(.easeIn(duration: 0.2)) {
-            cardOffset = -30
+        withAnimation(.easeIn(duration: 0.18)) {
+            cardOffset = -24
             cardOpacity = 0
         }
 
@@ -321,26 +355,144 @@ struct QuizView: View {
             session = s
             showFeedback = false
             selectedAnswer = nil
+            cardOffset = 28
 
-            cardOffset = 40
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
+            withAnimation(.spring(response: 0.42, dampingFraction: 0.78)) {
                 cardOffset = 0
                 cardOpacity = 1
             }
         }
     }
 
-    private func questionTypeBadge(_ type: QuizEngine.QuestionType) -> String {
+    private func questionTypeLabel(_ type: QuizEngine.QuestionType) -> String {
         switch type {
-        case .wordToDefinition:  return "WHAT DOES IT MEAN?"
-        case .definitionToWord:  return "WHICH WORD IS IT?"
-        case .fillInTheBlank:    return "FILL IN THE BLANK"
-        case .synonymMatch:      return "FIND THE SYNONYM"
+        case .wordToDefinition:  return "What does this mean?"
+        case .definitionToWord:  return "Which word is it?"
+        case .fillInTheBlank:    return "Fill in the blank"
+        case .synonymMatch:      return "Find the synonym"
         }
     }
 }
 
-// MARK: - Answer Button
+// MARK: - Quiz Answer Button (minimal outlined style)
+
+struct QuizAnswerButton: View {
+    let text: String
+    let index: Int
+    let state: AnswerState
+    let onTap: () -> Void
+
+    enum AnswerState { case neutral, correct, incorrect, dimmed }
+
+    private let letters = ["A", "B", "C", "D"]
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: 14) {
+                // Letter
+                Text(index < letters.count ? letters[index] : "")
+                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .foregroundColor(letterForeground)
+                    .frame(width: 26, height: 26)
+                    .background(
+                        Circle()
+                            .fill(letterBackground)
+                            .overlay(Circle().strokeBorder(letterBorder, lineWidth: 1))
+                    )
+
+                Text(text)
+                    .font(.system(size: 15, weight: .regular))
+                    .foregroundColor(textColor)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer()
+
+                // Result icon
+                if state == .correct {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(AppTheme.success)
+                } else if state == .incorrect {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(AppTheme.error)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(buttonBackground)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .strokeBorder(buttonBorder, lineWidth: 1)
+                    )
+            )
+        }
+        .buttonStyle(.plain)
+        .animation(.easeOut(duration: 0.18), value: state)
+    }
+
+    // MARK: - State-based styling
+
+    private var buttonBackground: Color {
+        switch state {
+        case .neutral:   return AppTheme.surface
+        case .correct:   return AppTheme.success.opacity(0.08)
+        case .incorrect: return AppTheme.error.opacity(0.08)
+        case .dimmed:    return AppTheme.surface.opacity(0.5)
+        }
+    }
+
+    private var buttonBorder: Color {
+        switch state {
+        case .neutral:   return AppTheme.border
+        case .correct:   return AppTheme.success.opacity(0.5)
+        case .incorrect: return AppTheme.error.opacity(0.5)
+        case .dimmed:    return AppTheme.separator
+        }
+    }
+
+    private var textColor: Color {
+        switch state {
+        case .neutral:   return AppTheme.text
+        case .correct:   return AppTheme.success
+        case .incorrect: return AppTheme.error
+        case .dimmed:    return AppTheme.textTertiary
+        }
+    }
+
+    private var letterForeground: Color {
+        switch state {
+        case .neutral:   return AppTheme.textSecondary
+        case .correct:   return AppTheme.success
+        case .incorrect: return AppTheme.error
+        case .dimmed:    return AppTheme.textTertiary
+        }
+    }
+
+    private var letterBackground: Color {
+        switch state {
+        case .neutral:   return AppTheme.background
+        case .correct:   return AppTheme.success.opacity(0.1)
+        case .incorrect: return AppTheme.error.opacity(0.1)
+        case .dimmed:    return AppTheme.background
+        }
+    }
+
+    private var letterBorder: Color {
+        switch state {
+        case .neutral:   return AppTheme.border
+        case .correct:   return AppTheme.success.opacity(0.3)
+        case .incorrect: return AppTheme.error.opacity(0.3)
+        case .dimmed:    return AppTheme.separator
+        }
+    }
+}
+
+// MARK: - Legacy AnswerButton compatibility
 
 struct AnswerButton: View {
     let text: String
@@ -350,109 +502,18 @@ struct AnswerButton: View {
 
     enum AnswerState { case neutral, correct, incorrect }
 
-    private let letters = ["A", "B", "C", "D"]
-
     var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 14) {
-                // Letter badge
-                Text(index < letters.count ? letters[index] : "?")
-                    .font(.system(size: 13, weight: .black, design: .rounded))
-                    .foregroundColor(letterColor)
-                    .frame(width: 30, height: 30)
-                    .background(
-                        Circle().fill(letterBgColor)
-                    )
-
-                Text(text)
-                    .font(.system(size: 15, weight: .semibold, design: .rounded))
-                    .foregroundColor(.white)
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(3)
-
-                Spacer()
-
-                if state == .correct {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.swipeRight)
-                } else if state == .incorrect {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.swipeLeft)
+        QuizAnswerButton(
+            text: text,
+            index: index,
+            state: {
+                switch state {
+                case .neutral:   return .neutral
+                case .correct:   return .correct
+                case .incorrect: return .incorrect
                 }
-            }
-            .padding(.horizontal, 18)
-            .padding(.vertical, 16)
-            .background(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(buttonBg)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .strokeBorder(borderColor, lineWidth: 1.5)
-                    )
-            )
-        }
-        .buttonStyle(.plain)
-        .animation(.spring(response: 0.3), value: state)
-    }
-
-    private var buttonBg: Color {
-        switch state {
-        case .neutral:   return Color.white.opacity(0.08)
-        case .correct:   return Color.swipeRight.opacity(0.15)
-        case .incorrect: return Color.swipeLeft.opacity(0.15)
-        }
-    }
-
-    private var borderColor: Color {
-        switch state {
-        case .neutral:   return Color.white.opacity(0.12)
-        case .correct:   return Color.swipeRight.opacity(0.6)
-        case .incorrect: return Color.swipeLeft.opacity(0.6)
-        }
-    }
-
-    private var letterColor: Color {
-        switch state {
-        case .neutral:   return Color.white.opacity(0.7)
-        case .correct:   return .swipeRight
-        case .incorrect: return .swipeLeft
-        }
-    }
-
-    private var letterBgColor: Color {
-        switch state {
-        case .neutral:   return Color.white.opacity(0.12)
-        case .correct:   return Color.swipeRight.opacity(0.2)
-        case .incorrect: return Color.swipeLeft.opacity(0.2)
-        }
-    }
-}
-
-// MARK: - Quiz Stat Preview
-
-private struct QuizStatPreview: View {
-    let label: String
-    let value: String
-    let icon: String
-    let color: Color
-
-    var body: some View {
-        VStack(spacing: 6) {
-            Image(systemName: icon)
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundColor(color)
-            Text(value)
-                .font(.system(size: 20, weight: .black, design: .rounded))
-                .foregroundColor(.white)
-            Text(label)
-                .font(.system(size: 11, weight: .medium, design: .rounded))
-                .foregroundColor(.white.opacity(0.5))
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 16)
-        .background(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(color.opacity(0.1))
+            }(),
+            onTap: onTap
         )
     }
 }

@@ -1,14 +1,14 @@
 import SwiftUI
 
-// MARK: - Quiz Results View
+// MARK: - Quiz Results View (cream, editorial)
 
 struct QuizResultsView: View {
     let session: QuizEngine.QuizSession
     let allWords: [Word]
     let onPlayAgain: () -> Void
 
-    @State private var showConfetti = false
     @State private var appear = false
+    @State private var showConfetti = false
     @State private var showWrongAnswers = false
 
     private var accuracy: Double { session.accuracy }
@@ -21,284 +21,261 @@ struct QuizResultsView: View {
 
     var body: some View {
         ZStack {
-            AnimatedGradientBackground()
+            AppTheme.background.ignoresSafeArea()
 
             if showConfetti {
-                ConfettiView()
-                    .ignoresSafeArea()
-                    .allowsHitTesting(false)
+                ConfettiView().ignoresSafeArea().allowsHitTesting(false)
             }
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 28) {
-                    // Trophy
-                    trophySection
+                VStack(alignment: .leading, spacing: 0) {
+                    // Hero result
+                    resultHero
+                        .padding(.horizontal, 28)
+                        .padding(.top, 64)
+                        .padding(.bottom, 36)
 
-                    // Score ring
-                    scoreRingSection
+                    MinimalDivider()
 
-                    // Stats cards
-                    statsRow
+                    // Score + stats
+                    statsSection
+                        .padding(.horizontal, 28)
+                        .padding(.top, 28)
+                        .padding(.bottom, 28)
+
+                    MinimalDivider()
 
                     // Time
-                    GlassCard(cornerRadius: 20, padding: 16, opacity: 0.1) {
-                        HStack {
-                            Image(systemName: "clock.fill")
-                                .foregroundColor(.gradTeal1)
-                            Text("Completed in")
-                                .font(.system(size: 14, weight: .medium, design: .rounded))
-                                .foregroundColor(.white.opacity(0.7))
-                            Spacer()
-                            Text(timeString)
-                                .font(.system(size: 16, weight: .bold, design: .rounded))
-                                .foregroundColor(.white)
-                        }
-                    }
-                    .padding(.horizontal, 24)
+                    timeRow
+                        .padding(.horizontal, 28)
+                        .padding(.vertical, 20)
 
-                    // Wrong answers review
+                    MinimalDivider()
+
+                    // Wrong answers
                     if !wrongWords.isEmpty {
                         wrongAnswersSection
+                            .padding(.top, 24)
                     }
 
-                    // Buttons
-                    VStack(spacing: 12) {
-                        Button(action: onPlayAgain) {
-                            HStack(spacing: 8) {
-                                Image(systemName: "arrow.clockwise")
-                                Text("Play Again")
-                            }
-                            .font(.system(size: 18, weight: .bold, design: .rounded))
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
-                            .background(
-                                Capsule().fill(LinearGradient.pastelGradient(for: .coral))
-                            )
-                        }
-
-                        Text("Results saved to spaced repetition queue")
-                            .font(.system(size: 12, weight: .medium, design: .rounded))
-                            .foregroundColor(.white.opacity(0.4))
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.bottom, 50)
+                    // CTA
+                    ctaSection
+                        .padding(.horizontal, 28)
+                        .padding(.top, 36)
+                        .padding(.bottom, 60)
                 }
             }
         }
         .onAppear {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
-                appear = true
-            }
+            withAnimation(.easeOut(duration: 0.45)) { appear = true }
             if isPerfect {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                    showConfetti = true
-                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { showConfetti = true }
             }
         }
     }
 
-    // MARK: - Trophy
+    // MARK: - Hero
 
-    private var trophySection: some View {
-        VStack(spacing: 12) {
-            Text(trophyEmoji)
-                .font(.system(size: 80))
-                .floating(amplitude: 10)
-                .scaleEffect(appear ? 1 : 0.5)
-                .animation(.spring(response: 0.6, dampingFraction: 0.6), value: appear)
+    private var resultHero: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(resultEmoji)
+                .font(.system(size: 52))
+                .scaleEffect(appear ? 1 : 0.7)
+                .opacity(appear ? 1 : 0)
 
             Text(resultTitle)
-                .font(.system(size: 32, weight: .black, design: .rounded))
-                .foregroundColor(.white)
-                .multilineTextAlignment(.center)
+                .font(.system(size: 36, weight: .bold))
+                .foregroundColor(AppTheme.text)
                 .opacity(appear ? 1 : 0)
-                .offset(y: appear ? 0 : 20)
-                .animation(.easeOut(duration: 0.5).delay(0.15), value: appear)
+                .offset(y: appear ? 0 : 10)
 
             Text(resultSubtitle)
-                .font(.system(size: 16, weight: .medium, design: .rounded))
-                .foregroundColor(.white.opacity(0.6))
-                .multilineTextAlignment(.center)
+                .font(.system(size: 16, weight: .regular))
+                .foregroundColor(AppTheme.textSecondary)
+                .lineSpacing(3)
                 .opacity(appear ? 1 : 0)
-                .animation(.easeOut(duration: 0.5).delay(0.2), value: appear)
+                .offset(y: appear ? 0 : 8)
         }
-        .padding(.top, 40)
-        .padding(.horizontal, 24)
+        .animation(.easeOut(duration: 0.45), value: appear)
     }
 
-    // MARK: - Score Ring
+    // MARK: - Stats
 
-    private var scoreRingSection: some View {
-        ZStack {
-            ProgressRing(
-                progress: accuracy,
-                lineWidth: 14,
-                ringColor: ringColor,
-                showLabel: false
-            )
-            .frame(width: 140, height: 140)
-
-            VStack(spacing: 2) {
-                Text("\(Int(accuracy * 100))")
-                    .font(.system(size: 48, weight: .black, design: .rounded))
-                    .foregroundColor(.white)
-                Text("% accuracy")
-                    .font(.system(size: 13, weight: .semibold, design: .rounded))
-                    .foregroundColor(.white.opacity(0.6))
-            }
+    private var statsSection: some View {
+        HStack(spacing: 0) {
+            resultStat(value: "\(Int(accuracy * 100))%", label: "Accuracy")
+            Spacer()
+            resultStat(value: "\(session.score)", label: "Correct")
+            Spacer()
+            resultStat(value: "\(session.totalQuestions - session.score)", label: "Missed")
+            Spacer()
+            resultStat(value: "\(session.totalQuestions)", label: "Total")
         }
-        .scaleEffect(appear ? 1 : 0.7)
         .opacity(appear ? 1 : 0)
-        .animation(.spring(response: 0.7, dampingFraction: 0.7).delay(0.2), value: appear)
+        .offset(y: appear ? 0 : 10)
+        .animation(.easeOut(duration: 0.38).delay(0.08), value: appear)
     }
 
-    // MARK: - Stats Row
-
-    private var statsRow: some View {
-        HStack(spacing: 12) {
-            ResultStatCard(
-                icon: "checkmark.circle.fill",
-                value: "\(session.score)",
-                label: "Correct",
-                color: .swipeRight
-            )
-            ResultStatCard(
-                icon: "xmark.circle.fill",
-                value: "\(session.totalQuestions - session.score)",
-                label: "Wrong",
-                color: .swipeLeft
-            )
-            ResultStatCard(
-                icon: "questionmark.circle.fill",
-                value: "\(session.totalQuestions)",
-                label: "Total",
-                color: .gradPurple1
-            )
+    private func resultStat(value: String, label: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(value)
+                .font(.system(size: 28, weight: .bold))
+                .foregroundColor(AppTheme.text)
+                .monospacedDigit()
+            Text(label.uppercased())
+                .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
+                .kerning(0.8)
         }
-        .padding(.horizontal, 24)
+    }
+
+    // MARK: - Time Row
+
+    private var timeRow: some View {
+        HStack {
+            Text("Time")
+                .font(.system(size: 14, weight: .regular))
+                .foregroundColor(AppTheme.textSecondary)
+            Spacer()
+            Text(timeString)
+                .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.text)
+        }
         .opacity(appear ? 1 : 0)
-        .offset(y: appear ? 0 : 20)
-        .animation(.easeOut(duration: 0.4).delay(0.3), value: appear)
+        .animation(.easeOut(duration: 0.38).delay(0.12), value: appear)
     }
 
     // MARK: - Wrong Answers
 
     private var wrongAnswersSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 0) {
+            // Toggle header
             Button {
-                withAnimation(.spring()) {
+                withAnimation(.easeInOut(duration: 0.22)) {
                     showWrongAnswers.toggle()
                 }
             } label: {
                 HStack {
-                    Image(systemName: showWrongAnswers ? "chevron.up.circle.fill" : "chevron.down.circle.fill")
-                        .foregroundColor(.gradAmber1)
-                    Text("Review \(wrongWords.count) missed words")
-                        .font(.system(size: 15, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
+                    Text("Missed Words")
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .foregroundColor(AppTheme.textTertiary)
+                        .kerning(1.2)
                     Spacer()
+                    Image(systemName: showWrongAnswers ? "chevron.up" : "chevron.down")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundColor(AppTheme.textTertiary)
+                    Text("\(wrongWords.count)")
+                        .font(.system(size: 12, weight: .medium, design: .monospaced))
+                        .foregroundColor(AppTheme.textTertiary)
                 }
-                .padding(.horizontal, 24)
+                .padding(.horizontal, 28)
             }
             .buttonStyle(.plain)
 
             if showWrongAnswers {
-                VStack(spacing: 8) {
-                    ForEach(wrongWords) { word in
-                        GlassCard(cornerRadius: 16, padding: 14, opacity: 0.1) {
-                            VStack(alignment: .leading, spacing: 6) {
-                                HStack {
-                                    Text(word.word)
-                                        .font(.system(size: 16, weight: .black, design: .rounded))
-                                        .foregroundColor(.white)
-                                    Spacer()
-                                    CategoryBadge(category: word.category)
-                                }
-                                Text(word.definition)
-                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                    .foregroundColor(.white.opacity(0.7))
-                                    .lineLimit(2)
-                            }
+                VStack(spacing: 0) {
+                    ForEach(Array(wrongWords.enumerated()), id: \.element.id) { i, word in
+                        MissedWordRow(word: word)
+
+                        if i < wrongWords.count - 1 {
+                            MinimalDivider().padding(.leading, 28)
                         }
                     }
                 }
-                .padding(.horizontal, 24)
+                .padding(.top, 12)
                 .transition(.move(edge: .top).combined(with: .opacity))
             }
+
+            MinimalDivider()
+                .padding(.top, 20)
         }
+        .opacity(appear ? 1 : 0)
+        .animation(.easeOut(duration: 0.38).delay(0.16), value: appear)
+    }
+
+    // MARK: - CTA
+
+    private var ctaSection: some View {
+        VStack(spacing: 12) {
+            Button(action: onPlayAgain) {
+                Text("Try Again")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(AppTheme.text)
+                    )
+            }
+            .buttonStyle(.plain)
+
+            Text("Results saved to your spaced repetition queue.")
+                .font(.system(size: 12, weight: .regular))
+                .foregroundColor(AppTheme.textTertiary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+        }
+        .opacity(appear ? 1 : 0)
+        .offset(y: appear ? 0 : 16)
+        .animation(.easeOut(duration: 0.38).delay(0.20), value: appear)
     }
 
     // MARK: - Computed
 
-    private var trophyEmoji: String {
+    private var resultEmoji: String {
         if isPerfect      { return "🏆" }
-        if accuracy >= 0.8 { return "🌟" }
-        if accuracy >= 0.6 { return "⭐️" }
-        if accuracy >= 0.4 { return "💪" }
+        if accuracy >= 0.8 { return "⭐️" }
+        if accuracy >= 0.6 { return "💪" }
         return "📚"
     }
 
     private var resultTitle: String {
-        if isPerfect       { return "Perfect Score!" }
-        if accuracy >= 0.8 { return "Excellent Work!" }
-        if accuracy >= 0.6 { return "Good Job!" }
-        if accuracy >= 0.4 { return "Keep Practicing!" }
-        return "Don't Give Up!"
+        if isPerfect       { return "Perfect." }
+        if accuracy >= 0.8  { return "Well done." }
+        if accuracy >= 0.6  { return "Good effort." }
+        return "Keep going."
     }
 
     private var resultSubtitle: String {
-        if isPerfect       { return "You knew every single word! 🔥" }
-        if accuracy >= 0.8 { return "Almost flawless. You're on a roll!" }
-        if accuracy >= 0.6 { return "Solid performance. More reps will seal it." }
-        if accuracy >= 0.4 { return "The hard words build character." }
-        return "Review the missed words and try again."
-    }
-
-    private var ringColor: Color {
-        if accuracy >= 0.8 { return .gradMint1 }
-        if accuracy >= 0.6 { return .gradAmber1 }
-        return .gradCoral1
+        if isPerfect       { return "Flawless. Every single word." }
+        if accuracy >= 0.8  { return "Strong performance. The words are sticking." }
+        if accuracy >= 0.6  { return "Solid work. More reps will seal it in." }
+        return "The hard words are the most valuable. Review and retry."
     }
 
     private var timeString: String {
-        let seconds = Int(session.elapsedTime)
-        let m = seconds / 60
-        let s = seconds % 60
-        if m > 0 { return "\(m)m \(s)s" }
-        return "\(s) seconds"
+        let s = Int(session.elapsedTime)
+        let m = s / 60
+        let sec = s % 60
+        return m > 0 ? "\(m)m \(sec)s" : "\(sec)s"
     }
 }
 
-// MARK: - Result Stat Card
+// MARK: - Missed Word Row
 
-private struct ResultStatCard: View {
-    let icon: String
-    let value: String
-    let label: String
-    let color: Color
+private struct MissedWordRow: View {
+    let word: Word
 
     var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.system(size: 22))
-                .foregroundColor(color)
-            Text(value)
-                .font(.system(size: 28, weight: .black, design: .rounded))
-                .foregroundColor(.white)
-            Text(label)
-                .font(.system(size: 12, weight: .medium, design: .rounded))
-                .foregroundColor(.white.opacity(0.55))
+        HStack(alignment: .top, spacing: 14) {
+            RoundedRectangle(cornerRadius: 3)
+                .fill(CardPalette.color(for: word.category))
+                .frame(width: 3, height: 36)
+                .padding(.leading, 28)
+                .padding(.vertical, 14)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(word.word)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(AppTheme.text)
+                Text(word.definition)
+                    .font(.system(size: 13))
+                    .foregroundColor(AppTheme.textSecondary)
+                    .lineLimit(2)
+            }
+            .padding(.vertical, 14)
+            .padding(.trailing, 28)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 18)
-        .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(color.opacity(0.12))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .strokeBorder(color.opacity(0.25), lineWidth: 1)
-                )
-        )
     }
 }

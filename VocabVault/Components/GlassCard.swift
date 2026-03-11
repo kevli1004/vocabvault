@@ -1,171 +1,177 @@
 import SwiftUI
 
-// MARK: - Glass Card
+// MARK: - Minimal Card
+// A clean, paper-like surface card with subtle border and optional shadow.
+// Replaces the old glassmorphism GlassCard.
 
 struct GlassCard<Content: View>: View {
-    var cornerRadius: CGFloat = 24
-    var padding: CGFloat = 20
-    var opacity: Double = 0.15
-    var shadowRadius: CGFloat = 16
-    @ViewBuilder let content: () -> Content
+    let cornerRadius: CGFloat
+    let padding: CGFloat
+    var opacity: Double = 1.0     // legacy param, ignored in new design
+    let content: Content
+
+    init(
+        cornerRadius: CGFloat = 16,
+        padding: CGFloat = 20,
+        opacity: Double = 1.0,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.cornerRadius = cornerRadius
+        self.padding = padding
+        self.opacity = opacity
+        self.content = content()
+    }
 
     var body: some View {
-        content()
+        content
             .padding(padding)
             .background(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(.ultraThinMaterial)
+                    .fill(AppTheme.surface)
                     .overlay(
                         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                            .fill(Color.white.opacity(opacity))
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                            .strokeBorder(
-                                LinearGradient(
-                                    colors: [
-                                        Color.white.opacity(0.4),
-                                        Color.white.opacity(0.1)
-                                    ],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ),
-                                lineWidth: 1
-                            )
+                            .strokeBorder(AppTheme.border, lineWidth: 1)
                     )
             )
-            .shadow(color: .black.opacity(0.15), radius: shadowRadius, x: 0, y: 8)
     }
 }
 
-// MARK: - Dark Glass Card
-
-struct DarkGlassCard<Content: View>: View {
-    var cornerRadius: CGFloat = 24
-    var padding: CGFloat = 20
-    @ViewBuilder let content: () -> Content
-
-    var body: some View {
-        content()
-            .padding(padding)
-            .background(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(Color.black.opacity(0.35))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                            .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
-                    )
-            )
-            .shadow(color: .black.opacity(0.3), radius: 20, x: 0, y: 10)
-    }
-}
-
-// MARK: - Stat Card
-
-struct StatCard: View {
-    let title: String
-    let value: String
-    let subtitle: String?
-    let icon: String
-    let palette: GradientPalette
-    var isLarge: Bool = false
-
-    var body: some View {
-        GlassCard(cornerRadius: 20, padding: 16) {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    ZStack {
-                        Circle()
-                            .fill(
-                                LinearGradient.pastelGradient(for: palette)
-                            )
-                            .frame(width: 36, height: 36)
-                        Image(systemName: icon)
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.white)
-                    }
-                    Spacer()
-                }
-
-                Text(value)
-                    .font(.system(size: isLarge ? 32 : 26, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
-
-                Text(title)
-                    .font(.system(size: 13, weight: .medium, design: .rounded))
-                    .foregroundColor(.white.opacity(0.7))
-
-                if let subtitle {
-                    Text(subtitle)
-                        .font(.system(size: 11, weight: .regular, design: .rounded))
-                        .foregroundColor(.white.opacity(0.5))
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Category Badge
+// MARK: - Category Badge (editorial pill style)
 
 struct CategoryBadge: View {
     let category: WordCategory
 
     var body: some View {
-        let (c1, _) = Color.categoryGradient(category)
         HStack(spacing: 4) {
             Text(category.emoji)
-                .font(.system(size: 12))
-            Text(category.rawValue)
-                .font(.system(size: 11, weight: .semibold, design: .rounded))
-                .foregroundColor(.white)
+                .font(.system(size: 11))
+            Text(category.rawValue.uppercased())
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .kerning(0.8)
         }
+        .foregroundColor(AppTheme.textSecondary)
         .padding(.horizontal, 10)
         .padding(.vertical, 5)
         .background(
             Capsule()
-                .fill(c1.opacity(0.85))
+                .strokeBorder(AppTheme.border, lineWidth: 1)
         )
     }
 }
 
-// MARK: - Mastery Badge
+// MARK: - Card Category Badge (for use on colored card backgrounds)
+
+struct CardCategoryBadge: View {
+    let category: WordCategory
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Text(category.emoji)
+                .font(.system(size: 11))
+            Text(category.rawValue.uppercased())
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .kerning(0.8)
+        }
+        .foregroundColor(CardPalette.cardText.opacity(0.6))
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
+        .background(
+            Capsule()
+                .fill(Color.white.opacity(0.35))
+        )
+    }
+}
+
+// MARK: - Mastery Badge (minimal dot indicator)
 
 struct MasteryBadge: View {
     let level: MasteryLevel
 
-    var body: some View {
-        Text(level.rawValue)
-            .font(.system(size: 11, weight: .bold, design: .rounded))
-            .foregroundColor(.white)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 5)
-            .background(
-                Capsule()
-                    .fill(Color.masteryColor(level))
-            )
-    }
-}
-
-// MARK: - Difficulty Dots
-
-struct DifficultyDots: View {
-    let difficulty: Int
-
-    var body: some View {
-        HStack(spacing: 4) {
-            ForEach(1...3, id: \.self) { dot in
-                Circle()
-                    .fill(dot <= difficulty ? dotColor : Color.white.opacity(0.3))
-                    .frame(width: 8, height: 8)
-            }
+    private var label: String {
+        switch level {
+        case .new:       return "New"
+        case .learning:  return "Learning"
+        case .reviewing: return "Reviewing"
+        case .mastered:  return "Mastered"
         }
     }
 
     private var dotColor: Color {
-        switch difficulty {
-        case 1: return Color.gradMint1
-        case 2: return Color.gradAmber1
-        default: return Color.gradCoral1
+        switch level {
+        case .new:       return AppTheme.textTertiary
+        case .learning:  return CardPalette.skyBlue
+        case .reviewing: return CardPalette.peach
+        case .mastered:  return CardPalette.mint
         }
+    }
+
+    var body: some View {
+        HStack(spacing: 5) {
+            Circle()
+                .fill(dotColor)
+                .frame(width: 6, height: 6)
+            Text(label)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(AppTheme.textSecondary)
+        }
+        .padding(.horizontal, 9)
+        .padding(.vertical, 5)
+        .background(
+            Capsule()
+                .strokeBorder(AppTheme.border, lineWidth: 1)
+        )
+    }
+}
+
+// MARK: - Difficulty Indicator (three minimal dots)
+
+struct DifficultyDots: View {
+    let difficulty: Int  // 1–3
+
+    var body: some View {
+        HStack(spacing: 3) {
+            ForEach(1...3, id: \.self) { i in
+                Circle()
+                    .fill(i <= difficulty ? AppTheme.text : AppTheme.border)
+                    .frame(width: 5, height: 5)
+            }
+        }
+    }
+}
+
+// MARK: - Minimal Section Header
+
+struct MinimalSectionHeader: View {
+    let title: String
+    var action: String? = nil
+    var onAction: (() -> Void)? = nil
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text(title.uppercased())
+                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
+                .kerning(1.2)
+
+            Spacer()
+
+            if let action, let onAction {
+                Button(action: onAction) {
+                    Text(action)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(AppTheme.textSecondary)
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Thin Divider
+
+struct MinimalDivider: View {
+    var body: some View {
+        Rectangle()
+            .fill(AppTheme.separator)
+            .frame(height: 1)
     }
 }

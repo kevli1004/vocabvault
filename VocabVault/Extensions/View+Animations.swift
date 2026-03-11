@@ -1,132 +1,69 @@
 import SwiftUI
 
-// MARK: - View Animation Extensions
+// MARK: - View Animations (minimal, editorial)
 
 extension View {
 
-    /// Shimmer loading effect
-    func shimmer(isActive: Bool = true) -> some View {
-        self.modifier(ShimmerModifier(isActive: isActive))
+    /// Subtle fade-in with optional upward offset. Clean, no spring bounce.
+    func fadeIn(delay: Double = 0, offset: CGFloat = 12) -> some View {
+        modifier(FadeInModifier(delay: delay, offset: offset))
     }
 
-    /// Scale bounce on appear
-    func bouncyAppear(delay: Double = 0) -> some View {
-        self.modifier(BouncyAppearModifier(delay: delay))
-    }
-
-    /// Subtle float animation (up/down)
+    /// Placeholder: floating removed. Returns self unchanged.
     func floating(amplitude: CGFloat = 6, duration: Double = 2.5) -> some View {
-        self.modifier(FloatingModifier(amplitude: amplitude, duration: duration))
+        self
     }
 
-    /// Glow effect
-    func glow(color: Color, radius: CGFloat = 12) -> some View {
-        self.shadow(color: color.opacity(0.6), radius: radius / 2)
-            .shadow(color: color.opacity(0.3), radius: radius)
-    }
-
-    /// Card press scale
-    func pressScaleFeedback(scale: CGFloat = 0.96) -> some View {
-        self.modifier(PressScaleModifier(pressedScale: scale))
+    /// Light press effect for buttons.
+    func pressEffect() -> some View {
+        modifier(PressEffectModifier())
     }
 }
 
-// MARK: - Shimmer Modifier
+// MARK: - Fade In Modifier
 
-struct ShimmerModifier: ViewModifier {
-    let isActive: Bool
-    @State private var phase: CGFloat = 0
-
-    func body(content: Content) -> some View {
-        if isActive {
-            content
-                .overlay(
-                    GeometryReader { geo in
-                        LinearGradient(
-                            gradient: Gradient(stops: [
-                                .init(color: .clear, location: 0),
-                                .init(color: .white.opacity(0.4), location: 0.3),
-                                .init(color: .white.opacity(0.7), location: 0.5),
-                                .init(color: .white.opacity(0.4), location: 0.7),
-                                .init(color: .clear, location: 1)
-                            ]),
-                            startPoint: .init(x: phase - 1, y: 0.5),
-                            endPoint:   .init(x: phase,     y: 0.5)
-                        )
-                        .frame(width: geo.size.width * 3)
-                        .offset(x: -geo.size.width + phase * geo.size.width * 2)
-                    }
-                    .clipped()
-                    .allowsHitTesting(false)
-                )
-                .onAppear {
-                    withAnimation(.linear(duration: 1.4).repeatForever(autoreverses: false)) {
-                        phase = 1.5
-                    }
-                }
-        } else {
-            content
-        }
-    }
-}
-
-// MARK: - Bouncy Appear Modifier
-
-struct BouncyAppearModifier: ViewModifier {
+private struct FadeInModifier: ViewModifier {
     let delay: Double
-    @State private var appeared = false
+    let offset: CGFloat
+    @State private var visible = false
 
     func body(content: Content) -> some View {
         content
-            .scaleEffect(appeared ? 1 : 0.7)
-            .opacity(appeared ? 1 : 0)
+            .opacity(visible ? 1 : 0)
+            .offset(y: visible ? 0 : offset)
             .onAppear {
-                withAnimation(
-                    .spring(response: 0.5, dampingFraction: 0.65, blendDuration: 0)
-                    .delay(delay)
-                ) {
-                    appeared = true
+                withAnimation(.easeOut(duration: 0.38).delay(delay)) {
+                    visible = true
                 }
             }
     }
 }
 
-// MARK: - Floating Modifier
+// MARK: - Press Effect Modifier
 
-struct FloatingModifier: ViewModifier {
-    let amplitude: CGFloat
-    let duration: Double
-    @State private var offset: CGFloat = 0
-
-    func body(content: Content) -> some View {
-        content
-            .offset(y: offset)
-            .onAppear {
-                withAnimation(
-                    .easeInOut(duration: duration)
-                    .repeatForever(autoreverses: true)
-                ) {
-                    offset = amplitude
-                }
-            }
-    }
-}
-
-// MARK: - Press Scale Modifier
-
-struct PressScaleModifier: ViewModifier {
-    let pressedScale: CGFloat
+private struct PressEffectModifier: ViewModifier {
     @State private var pressed = false
 
     func body(content: Content) -> some View {
         content
-            .scaleEffect(pressed ? pressedScale : 1)
-            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: pressed)
-            .onTapGesture { }  // absorb just for animation—real tap handled by parent
+            .scaleEffect(pressed ? 0.96 : 1.0)
+            .animation(.easeOut(duration: 0.12), value: pressed)
             .simultaneousGesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { _ in pressed = true }
                     .onEnded   { _ in pressed = false }
             )
     }
+}
+
+// MARK: - Transition helpers
+
+extension AnyTransition {
+    static let slideUpFade: AnyTransition =
+        .asymmetric(
+            insertion: .move(edge: .bottom).combined(with: .opacity),
+            removal:   .move(edge: .bottom).combined(with: .opacity)
+        )
+
+    static let crossDissolve: AnyTransition = .opacity
 }

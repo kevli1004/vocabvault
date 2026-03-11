@@ -1,6 +1,6 @@
 import SwiftUI
 
-// MARK: - Settings View
+// MARK: - Settings View (cream editorial)
 
 struct SettingsView: View {
     @EnvironmentObject var store: WordStore
@@ -9,34 +9,58 @@ struct SettingsView: View {
     @State private var showResetSuccess = false
     @AppStorage("vv_notificationsEnabled") private var notificationsEnabled = false
     @AppStorage("vv_notificationHour")    private var notificationHour = 9
+    @State private var appear = false
 
     var body: some View {
         ZStack {
-            AnimatedGradientBackground()
+            AppTheme.background.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 20) {
+                VStack(alignment: .leading, spacing: 0) {
+
                     // Header
-                    settingsHeader
+                    header
+                        .padding(.horizontal, 28)
+                        .padding(.top, 64)
+                        .padding(.bottom, 32)
+
+                    MinimalDivider()
 
                     // Daily Goal
                     dailyGoalSection
+                        .padding(.horizontal, 28)
+                        .padding(.vertical, 24)
 
-                    // Notification settings
+                    MinimalDivider()
+
+                    // Notifications
                     notificationSection
+                        .padding(.horizontal, 28)
+                        .padding(.vertical, 20)
 
-                    // App info
-                    aboutSection
+                    MinimalDivider()
 
                     // Stats overview
                     statsSection
+                        .padding(.horizontal, 28)
+                        .padding(.vertical, 24)
+
+                    MinimalDivider()
+
+                    // About
+                    aboutSection
+                        .padding(.horizontal, 28)
+                        .padding(.vertical, 24)
+
+                    MinimalDivider()
 
                     // Danger zone
                     dangerZone
+                        .padding(.horizontal, 28)
+                        .padding(.vertical, 24)
 
-                    Spacer(minLength: 40)
+                    Spacer(minLength: 80)
                 }
-                .padding(.horizontal, 20)
             }
         }
         .confirmationDialog(
@@ -48,249 +72,223 @@ struct SettingsView: View {
                 store.resetProgress()
                 showResetSuccess = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    showResetSuccess = false
+                    withAnimation { showResetSuccess = false }
                 }
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This will reset all your progress, streaks, and mastery levels. This cannot be undone.")
+            Text("This will reset all progress, streaks, and mastery levels. Cannot be undone.")
         }
         .overlay(alignment: .top) {
             if showResetSuccess {
-                SuccessToast(message: "Progress reset. Fresh start! 🌱")
-                    .padding(.top, 60)
+                SuccessToast(message: "Progress reset. Fresh start.")
+                    .padding(.top, 56)
                     .transition(.move(edge: .top).combined(with: .opacity))
                     .animation(.spring(), value: showResetSuccess)
             }
         }
         .onAppear {
             dailyGoalInput = Double(store.dailyGoal)
+            withAnimation(.easeOut(duration: 0.38)) { appear = true }
         }
     }
 
     // MARK: - Header
 
-    private var settingsHeader: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Settings")
-                    .font(.system(size: 34, weight: .black, design: .rounded))
-                    .foregroundColor(.white)
-                Text("Version 1.0")
-                    .font(.system(size: 14, weight: .medium, design: .rounded))
-                    .foregroundColor(.white.opacity(0.4))
-            }
+    private var header: some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text("Settings")
+                .font(.system(size: 36, weight: .bold))
+                .foregroundColor(AppTheme.text)
             Spacer()
-            Text("⚙️")
-                .font(.system(size: 36))
+            Text("v1.0")
+                .font(.system(size: 12, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
         }
-        .padding(.top, 16)
-        .padding(.bottom, 8)
+        .opacity(appear ? 1 : 0)
     }
 
     // MARK: - Daily Goal
 
     private var dailyGoalSection: some View {
-        GlassCard(cornerRadius: 24, padding: 22, opacity: 0.1) {
-            VStack(alignment: .leading, spacing: 18) {
-                SettingsSectionHeader(title: "Study Goal", icon: "target", color: .gradCoral1)
+        VStack(alignment: .leading, spacing: 18) {
+            Text("Study Goal")
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
+                .kerning(1.2)
 
-                VStack(spacing: 12) {
-                    HStack {
-                        Text("Daily word target")
-                            .font(.system(size: 15, weight: .semibold, design: .rounded))
-                            .foregroundColor(.white)
-                        Spacer()
-                        Text("\(Int(dailyGoalInput)) words")
-                            .font(.system(size: 16, weight: .black, design: .rounded))
-                            .foregroundColor(.gradCoral1)
-                    }
-
-                    Slider(
-                        value: $dailyGoalInput,
-                        in: 5...50,
-                        step: 5
-                    ) { _ in
-                        store.setDailyGoal(Int(dailyGoalInput))
-                    }
-                    .tint(.gradCoral1)
-
-                    HStack {
-                        Text("5")
-                        Spacer()
-                        Text("25")
-                        Spacer()
-                        Text("50")
-                    }
-                    .font(.system(size: 11, design: .rounded))
-                    .foregroundColor(.white.opacity(0.35))
-                }
+            HStack {
+                Text("Daily target")
+                    .font(.system(size: 15, weight: .regular))
+                    .foregroundColor(AppTheme.text)
+                Spacer()
+                Text("\(Int(dailyGoalInput)) words")
+                    .font(.system(size: 15, weight: .semibold, design: .monospaced))
+                    .foregroundColor(AppTheme.text)
             }
+
+            Slider(value: $dailyGoalInput, in: 5...50, step: 5) { _ in
+                store.setDailyGoal(Int(dailyGoalInput))
+            }
+            .tint(AppTheme.text)
+
+            HStack {
+                Text("5")
+                Spacer()
+                Text("25")
+                Spacer()
+                Text("50")
+            }
+            .font(.system(size: 11, design: .monospaced))
+            .foregroundColor(AppTheme.textTertiary)
         }
+        .opacity(appear ? 1 : 0)
+        .animation(.easeOut(duration: 0.38).delay(0.04), value: appear)
     }
 
     // MARK: - Notifications
 
     private var notificationSection: some View {
-        GlassCard(cornerRadius: 24, padding: 22, opacity: 0.1) {
-            VStack(alignment: .leading, spacing: 18) {
-                SettingsSectionHeader(title: "Reminders", icon: "bell.badge.fill", color: .gradAmber1)
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Reminders")
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
+                .kerning(1.2)
 
-                Toggle(isOn: $notificationsEnabled) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Daily reminder")
-                            .font(.system(size: 15, weight: .semibold, design: .rounded))
-                            .foregroundColor(.white)
-                        Text("Get reminded to study each day")
-                            .font(.system(size: 12, design: .rounded))
-                            .foregroundColor(.white.opacity(0.5))
-                    }
+            Toggle(isOn: $notificationsEnabled) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Daily reminder")
+                        .font(.system(size: 15, weight: .regular))
+                        .foregroundColor(AppTheme.text)
+                    Text("Get reminded to study each day")
+                        .font(.system(size: 13))
+                        .foregroundColor(AppTheme.textTertiary)
                 }
-                .tint(.gradAmber1)
+            }
+            .tint(AppTheme.text)
 
-                if notificationsEnabled {
-                    HStack {
-                        Text("Reminder time")
-                            .font(.system(size: 15, weight: .semibold, design: .rounded))
-                            .foregroundColor(.white)
-                        Spacer()
-                        Picker("Hour", selection: $notificationHour) {
-                            ForEach(6..<23, id: \.self) { hour in
-                                Text(hourString(hour))
-                                    .tag(hour)
-                                    .foregroundColor(.white)
-                            }
+            if notificationsEnabled {
+                HStack {
+                    Text("Reminder time")
+                        .font(.system(size: 15, weight: .regular))
+                        .foregroundColor(AppTheme.text)
+                    Spacer()
+                    Picker("Hour", selection: $notificationHour) {
+                        ForEach(6..<23, id: \.self) { hour in
+                            Text(hourString(hour))
+                                .tag(hour)
                         }
-                        .pickerStyle(.menu)
-                        .tint(.gradAmber1)
                     }
-                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .pickerStyle(.menu)
+                    .tint(AppTheme.text)
                 }
+                .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
-    }
-
-    // MARK: - About
-
-    private var aboutSection: some View {
-        GlassCard(cornerRadius: 24, padding: 22, opacity: 0.1) {
-            VStack(alignment: .leading, spacing: 18) {
-                SettingsSectionHeader(title: "About", icon: "info.circle.fill", color: .gradPurple1)
-
-                VStack(spacing: 12) {
-                    AboutRow(label: "App", value: "VocabVault")
-                    AboutRow(label: "Words", value: "\(store.totalWords)")
-                    AboutRow(label: "Algorithm", value: "SM-2 Spaced Repetition")
-                    AboutRow(label: "Platform", value: "iOS 17+")
-                }
-            }
-        }
+        .animation(.easeInOut(duration: 0.2), value: notificationsEnabled)
+        .opacity(appear ? 1 : 0)
+        .animation(.easeOut(duration: 0.38).delay(0.06), value: appear)
     }
 
     // MARK: - Stats
 
     private var statsSection: some View {
-        GlassCard(cornerRadius: 24, padding: 22, opacity: 0.1) {
-            VStack(alignment: .leading, spacing: 18) {
-                SettingsSectionHeader(title: "Your Stats", icon: "chart.bar.fill", color: .gradMint1)
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Your Stats")
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
+                .kerning(1.2)
 
-                VStack(spacing: 12) {
-                    AboutRow(label: "Current Streak", value: "\(store.currentStreak) days 🔥")
-                    AboutRow(label: "Longest Streak", value: "\(store.longestStreak) days")
-                    AboutRow(label: "Total Reviews", value: "\(store.totalReviews)")
-                    AboutRow(label: "Accuracy", value: "\(Int(store.overallAccuracy * 100))%")
-                    AboutRow(label: "Words Mastered", value: "\(store.totalMastered) / \(store.totalWords)")
-                }
+            VStack(spacing: 12) {
+                SettingsRow(label: "Current Streak", value: "\(store.currentStreak) days")
+                SettingsRow(label: "Longest Streak", value: "\(store.longestStreak) days")
+                SettingsRow(label: "Total Reviews",  value: "\(store.totalReviews)")
+                SettingsRow(label: "Accuracy",       value: "\(Int(store.overallAccuracy * 100))%")
+                SettingsRow(label: "Words Mastered", value: "\(store.totalMastered) / \(store.totalWords)")
             }
         }
+        .opacity(appear ? 1 : 0)
+        .animation(.easeOut(duration: 0.38).delay(0.08), value: appear)
+    }
+
+    // MARK: - About
+
+    private var aboutSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("About")
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
+                .kerning(1.2)
+
+            VStack(spacing: 12) {
+                SettingsRow(label: "App",       value: "VocabVault")
+                SettingsRow(label: "Words",     value: "\(store.totalWords)")
+                SettingsRow(label: "Algorithm", value: "SM-2 Spaced Repetition")
+                SettingsRow(label: "Platform",  value: "iOS 17+")
+            }
+        }
+        .opacity(appear ? 1 : 0)
+        .animation(.easeOut(duration: 0.38).delay(0.10), value: appear)
     }
 
     // MARK: - Danger Zone
 
     private var dangerZone: some View {
-        GlassCard(cornerRadius: 24, padding: 22, opacity: 0.1) {
-            VStack(alignment: .leading, spacing: 16) {
-                SettingsSectionHeader(title: "Danger Zone", icon: "exclamationmark.triangle.fill", color: .swipeLeft)
+        VStack(alignment: .leading, spacing: 14) {
+            Text("Data")
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
+                .kerning(1.2)
 
-                Button {
-                    showResetConfirm = true
-                } label: {
-                    HStack(spacing: 10) {
-                        Image(systemName: "arrow.counterclockwise.circle.fill")
-                            .font(.system(size: 18))
-                        Text("Reset All Progress")
-                            .font(.system(size: 15, weight: .bold, design: .rounded))
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundColor(.swipeLeft.opacity(0.5))
-                    }
-                    .foregroundColor(.swipeLeft)
-                    .padding(16)
-                    .background(
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .fill(Color.swipeLeft.opacity(0.1))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                    .strokeBorder(Color.swipeLeft.opacity(0.3), lineWidth: 1)
-                            )
-                    )
+            Button {
+                showResetConfirm = true
+            } label: {
+                HStack {
+                    Text("Reset All Progress")
+                        .font(.system(size: 15, weight: .regular))
+                        .foregroundColor(AppTheme.error)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 12))
+                        .foregroundColor(AppTheme.error.opacity(0.5))
                 }
-                .buttonStyle(.plain)
-
-                Text("This will permanently delete all study progress, streaks, and mastery levels. Your word list will remain.")
-                    .font(.system(size: 12, design: .rounded))
-                    .foregroundColor(.white.opacity(0.35))
             }
+            .buttonStyle(.plain)
+
+            Text("Permanently deletes all study progress, streaks, and mastery levels. Your word list is preserved.")
+                .font(.system(size: 12))
+                .foregroundColor(AppTheme.textTertiary)
+                .lineSpacing(2)
         }
+        .opacity(appear ? 1 : 0)
+        .animation(.easeOut(duration: 0.38).delay(0.12), value: appear)
     }
 
     // MARK: - Helpers
 
     private func hourString(_ hour: Int) -> String {
-        let h = hour > 12 ? hour - 12 : hour == 0 ? 12 : hour
+        let h = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour)
         let suffix = hour >= 12 ? "PM" : "AM"
         return "\(h):00 \(suffix)"
     }
 }
 
-// MARK: - Settings Section Header
+// MARK: - Settings Row
 
-private struct SettingsSectionHeader: View {
-    let title: String
-    let icon: String
-    let color: Color
-
-    var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(color)
-            Text(title.uppercased())
-                .font(.system(size: 11, weight: .bold, design: .rounded))
-                .foregroundColor(color.opacity(0.8))
-                .kerning(1.2)
-        }
-    }
-}
-
-// MARK: - About Row
-
-private struct AboutRow: View {
+private struct SettingsRow: View {
     let label: String
     let value: String
 
     var body: some View {
         HStack {
             Text(label)
-                .font(.system(size: 14, weight: .medium, design: .rounded))
-                .foregroundColor(.white.opacity(0.6))
+                .font(.system(size: 14, weight: .regular))
+                .foregroundColor(AppTheme.textSecondary)
             Spacer()
             Text(value)
-                .font(.system(size: 14, weight: .bold, design: .rounded))
-                .foregroundColor(.white)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(AppTheme.text)
         }
-        .padding(.vertical, 2)
     }
 }
 
@@ -301,18 +299,27 @@ private struct SuccessToast: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            Image(systemName: "checkmark.circle.fill")
-                .foregroundColor(.gradMint1)
+            Image(systemName: "checkmark")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundColor(AppTheme.success)
+                .frame(width: 24, height: 24)
+                .background(Circle().fill(AppTheme.success.opacity(0.12)))
+
             Text(message)
-                .font(.system(size: 14, weight: .bold, design: .rounded))
-                .foregroundColor(.white)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(AppTheme.text)
+
             Spacer()
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 14)
         .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(.ultraThinMaterial)
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(AppTheme.surface)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .strokeBorder(AppTheme.border, lineWidth: 1)
+                )
         )
         .padding(.horizontal, 20)
     }

@@ -1,366 +1,268 @@
 import SwiftUI
 
-// MARK: - Dashboard View
+// MARK: - Dashboard / Stats View
+// Editorial. The numbers tell the story. No charts, no decorations.
 
 struct DashboardView: View {
     @EnvironmentObject var store: WordStore
-    @Binding var selectedTab: AppTab
-
     @State private var appear = false
-    @State private var greetingOpacity: Double = 0
 
-    private var greeting: String {
-        let hour = Calendar.current.component(.hour, from: Date())
-        switch hour {
-        case 5..<12:  return "Good morning"
-        case 12..<17: return "Good afternoon"
-        case 17..<21: return "Good evening"
-        default:       return "Burning midnight oil"
-        }
-    }
-
-    private var greetingEmoji: String {
-        let hour = Calendar.current.component(.hour, from: Date())
-        switch hour {
-        case 5..<12:  return "☀️"
-        case 12..<17: return "🌤"
-        case 17..<21: return "🌇"
-        default:       return "🌙"
-        }
-    }
-
-    private var motivationalQuote: String {
-        let dayOfYear = Calendar.current.ordinality(of: .day, in: .year, for: Date()) ?? 1
-        return motivationalQuotes[dayOfYear % motivationalQuotes.count]
-    }
+    // MARK: - Body
 
     var body: some View {
         ZStack {
-            AnimatedGradientBackground()
+            AppTheme.background.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 20) {
-                    // Greeting
-                    greetingSection
-                        .padding(.horizontal, 24)
-                        .padding(.top, 16)
+                VStack(alignment: .leading, spacing: 0) {
+                    // Header
+                    header
+                        .padding(.horizontal, 28)
+                        .padding(.top, 64)
+                        .padding(.bottom, 32)
 
-                    // Review CTA card
-                    if store.dueCount > 0 {
-                        reviewCTACard
-                            .padding(.horizontal, 20)
-                    }
+                    MinimalDivider()
+                        .padding(.horizontal, 28)
 
-                    // Stats grid
-                    statsGrid
-                        .padding(.horizontal, 20)
+                    // Due-for-review CTA
+                    reviewCTA
+                        .padding(.horizontal, 28)
+                        .padding(.top, 28)
 
-                    // Streak & Progress
-                    streakCard
-                        .padding(.horizontal, 20)
+                    MinimalDivider()
+                        .padding(.horizontal, 28)
+                        .padding(.top, 28)
 
-                    // Weekly bar chart
-                    weeklyProgressCard
-                        .padding(.horizontal, 20)
+                    // Key numbers
+                    keyNumbers
+                        .padding(.horizontal, 28)
+                        .padding(.top, 28)
 
-                    // Category breakdown
-                    categoryBreakdownCard
-                        .padding(.horizontal, 20)
+                    MinimalDivider()
+                        .padding(.horizontal, 28)
+                        .padding(.top, 28)
 
-                    // Quote
-                    quoteCard
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 40)
+                    // Mastery breakdown
+                    masteryBreakdown
+                        .padding(.horizontal, 28)
+                        .padding(.top, 28)
+
+                    MinimalDivider()
+                        .padding(.horizontal, 28)
+                        .padding(.top, 28)
+
+                    // Streak section
+                    streakSection
+                        .padding(.horizontal, 28)
+                        .padding(.top, 28)
+                        .padding(.bottom, 60)
                 }
             }
         }
         .onAppear {
-            withAnimation(.easeOut(duration: 0.6)) {
-                appear = true
-                greetingOpacity = 1
-            }
+            withAnimation(.easeOut(duration: 0.45)) { appear = true }
         }
     }
 
-    // MARK: - Greeting
+    // MARK: - Header
 
-    private var greetingSection: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 8) {
-                        Text(greetingEmoji)
-                            .font(.system(size: 24))
-                        Text(greeting)
-                            .font(.system(size: 16, weight: .medium, design: .rounded))
-                            .foregroundColor(.white.opacity(0.7))
-                    }
-                    Text("VocabVault")
-                        .font(.system(size: 34, weight: .black, design: .rounded))
-                        .foregroundColor(.white)
-                }
-                Spacer()
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("VocabVault")
+                .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
+                .kerning(1.2)
 
-                // Streak display
-                GlassCard(cornerRadius: 16, padding: 12, opacity: 0.12) {
-                    StreakCounter(streak: store.currentStreak)
-                }
-            }
+            Text("Your Progress")
+                .font(.system(size: 36, weight: .bold))
+                .foregroundColor(AppTheme.text)
         }
-        .opacity(greetingOpacity)
-        .offset(y: appear ? 0 : -20)
-        .animation(.easeOut(duration: 0.5), value: appear)
+        .opacity(appear ? 1 : 0)
+        .offset(y: appear ? 0 : 10)
     }
 
     // MARK: - Review CTA
 
-    private var reviewCTACard: some View {
-        Button {
-            selectedTab = .cards
-        } label: {
-            GlassCard(cornerRadius: 24, padding: 0, opacity: 0.08) {
-                HStack(spacing: 0) {
-                    // Left gradient stripe
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .fill(LinearGradient.pastelGradient(for: .teal))
-                        .frame(width: 6)
-                        .padding(.vertical, 0)
+    private var reviewCTA: some View {
+        let dueCount = store.dueWords.count
 
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack(spacing: 8) {
-                            Text("📚")
-                                .font(.system(size: 22))
-                            Text("Ready to Review")
-                                .font(.system(size: 18, weight: .black, design: .rounded))
-                                .foregroundColor(.white)
-                        }
+        return HStack(alignment: .center, spacing: 20) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(dueCount > 0 ? "\(dueCount) words due" : "All caught up")
+                    .font(.system(size: 22, weight: .bold))
+                    .foregroundColor(AppTheme.text)
 
-                        Text("\(store.dueCount) words due · \(store.newCount) new")
-                            .font(.system(size: 14, weight: .medium, design: .rounded))
-                            .foregroundColor(.white.opacity(0.65))
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 18)
-
-                    Spacer()
-
-                    Image(systemName: "arrow.right.circle.fill")
-                        .font(.system(size: 28))
-                        .foregroundColor(.gradTeal1)
-                        .padding(.trailing, 20)
-                }
-                .frame(maxWidth: .infinity)
+                Text(dueCount > 0
+                     ? "Ready for review in your queue."
+                     : "No reviews scheduled right now.")
+                    .font(.system(size: 14, weight: .regular))
+                    .foregroundColor(AppTheme.textSecondary)
             }
-        }
-        .buttonStyle(.plain)
-        .bouncyAppear(delay: 0.1)
-    }
 
-    // MARK: - Stats Grid
+            Spacer()
 
-    private var statsGrid: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
-            StatCard(
-                title: "Words Mastered",
-                value: "\(store.totalMastered)",
-                subtitle: "of \(store.totalWords) total",
-                icon: "star.fill",
-                palette: .amber
-            )
-            .bouncyAppear(delay: 0.15)
-
-            StatCard(
-                title: "Total Reviews",
-                value: "\(store.totalReviews)",
-                subtitle: nil,
-                icon: "arrow.clockwise",
-                palette: .teal
-            )
-            .bouncyAppear(delay: 0.20)
-
-            StatCard(
-                title: "Accuracy",
-                value: "\(Int(store.overallAccuracy * 100))%",
-                subtitle: "all-time",
-                icon: "target",
-                palette: .coral
-            )
-            .bouncyAppear(delay: 0.25)
-
-            StatCard(
-                title: "Today's Goal",
-                value: "\(store.reviewedToday)/\(store.dailyGoal)",
-                subtitle: "words reviewed",
-                icon: "checkmark.circle.fill",
-                palette: .mint
-            )
-            .bouncyAppear(delay: 0.30)
-        }
-    }
-
-    // MARK: - Streak Card
-
-    private var streakCard: some View {
-        GlassCard(cornerRadius: 24, padding: 20, opacity: 0.1) {
-            VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Text("Progress")
-                        .font(.system(size: 18, weight: .black, design: .rounded))
-                        .foregroundColor(.white)
-                    Spacer()
-                    Text("Longest: \(store.longestStreak) days")
-                        .font(.system(size: 12, weight: .medium, design: .rounded))
-                        .foregroundColor(.white.opacity(0.5))
+            if dueCount > 0 {
+                VStack(spacing: 2) {
+                    Text("\(dueCount)")
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundColor(AppTheme.text)
+                        .monospacedDigit()
+                    Text("DUE")
+                        .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                        .foregroundColor(AppTheme.textTertiary)
+                        .kerning(0.8)
                 }
-
-                // Mastery breakdown
-                HStack(spacing: 0) {
-                    ForEach(store.masteryBreakdown, id: \.0) { level, count in
-                        let fraction = store.totalWords > 0 ? Double(count) / Double(store.totalWords) : 0
-                        Rectangle()
-                            .fill(Color.masteryColor(level))
-                            .frame(width: max(0, (UIScreen.main.bounds.width - 80) * fraction))
-                            .animation(.spring(response: 0.8, dampingFraction: 0.7).delay(0.1), value: fraction)
-                    }
-                }
-                .frame(height: 8)
-                .clipShape(Capsule())
-
-                // Legend
-                HStack(spacing: 16) {
-                    ForEach(MasteryLevel.allCases, id: \.self) { level in
-                        let count = store.masteryBreakdown.first(where: { $0.0 == level })?.1 ?? 0
-                        HStack(spacing: 5) {
-                            Circle()
-                                .fill(Color.masteryColor(level))
-                                .frame(width: 8, height: 8)
-                            Text(level.rawValue)
-                                .font(.system(size: 11, weight: .medium, design: .rounded))
-                                .foregroundColor(.white.opacity(0.6))
-                            Text("(\(count))")
-                                .font(.system(size: 11, weight: .bold, design: .rounded))
-                                .foregroundColor(.white.opacity(0.45))
-                        }
-                    }
-                    Spacer()
-                }
-            }
-        }
-        .bouncyAppear(delay: 0.35)
-    }
-
-    // MARK: - Weekly Progress
-
-    private var weeklyProgressCard: some View {
-        GlassCard(cornerRadius: 24, padding: 20, opacity: 0.1) {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("This Week")
-                    .font(.system(size: 18, weight: .black, design: .rounded))
-                    .foregroundColor(.white)
-
-                MiniBarChart(
-                    values: store.weeklyProgress,
-                    labels: weekdayLabels(),
-                    accentColor: .gradPurple1
-                )
-                .frame(height: 80)
-            }
-        }
-        .bouncyAppear(delay: 0.40)
-    }
-
-    // MARK: - Category Breakdown
-
-    private var categoryBreakdownCard: some View {
-        GlassCard(cornerRadius: 24, padding: 20, opacity: 0.1) {
-            VStack(alignment: .leading, spacing: 14) {
-                Text("By Category")
-                    .font(.system(size: 18, weight: .black, design: .rounded))
-                    .foregroundColor(.white)
-
-                ForEach(store.categoryBreakdown, id: \.0) { category, total in
-                    let mastered = store.words(in: category).filter { $0.masteryLevel == .mastered }.count
-                    let fraction = total > 0 ? Double(mastered) / Double(total) : 0
-                    let (c1, _) = Color.categoryGradient(category)
-
-                    HStack(spacing: 12) {
-                        Text(category.emoji)
-                            .font(.system(size: 18))
-                            .frame(width: 30)
-
-                        Text(category.rawValue)
-                            .font(.system(size: 13, weight: .semibold, design: .rounded))
-                            .foregroundColor(.white.opacity(0.85))
-                            .frame(width: 85, alignment: .leading)
-
-                        // Bar
-                        GeometryReader { geo in
-                            ZStack(alignment: .leading) {
-                                RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                    .fill(Color.white.opacity(0.1))
-                                RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                    .fill(c1)
-                                    .frame(width: geo.size.width * fraction)
-                                    .animation(.spring(response: 0.7).delay(0.05), value: fraction)
-                            }
-                        }
-                        .frame(height: 6)
-
-                        Text("\(mastered)/\(total)")
-                            .font(.system(size: 11, weight: .bold, design: .rounded))
-                            .foregroundColor(.white.opacity(0.45))
-                            .frame(width: 36, alignment: .trailing)
-                    }
-                }
-            }
-        }
-        .bouncyAppear(delay: 0.45)
-    }
-
-    // MARK: - Quote Card
-
-    private var quoteCard: some View {
-        GlassCard(cornerRadius: 24, padding: 22, opacity: 0.08) {
-            VStack(spacing: 10) {
-                Text("💡")
+            } else {
+                Text("✦")
                     .font(.system(size: 28))
-                Text("\"\(motivationalQuote)\"")
-                    .font(.system(size: 15, weight: .medium, design: .rounded))
-                    .foregroundColor(.white.opacity(0.8))
-                    .multilineTextAlignment(.center)
-                    .italic()
+                    .foregroundColor(AppTheme.textTertiary)
             }
-            .frame(maxWidth: .infinity)
         }
-        .bouncyAppear(delay: 0.50)
+        .padding(.bottom, 28)
+        .opacity(appear ? 1 : 0)
+        .offset(y: appear ? 0 : 10)
+        .animation(.easeOut(duration: 0.38).delay(0.06), value: appear)
     }
 
-    // MARK: - Helpers
+    // MARK: - Key Numbers
 
-    private func weekdayLabels() -> [String] {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEE"
-        return (0..<7).map { daysAgo in
-            let date = Calendar.current.date(byAdding: .day, value: -(6 - daysAgo), to: Date()) ?? Date()
-            return formatter.string(from: date)
+    private var keyNumbers: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("Overview")
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
+                .kerning(1.2)
+
+            // 2×2 grid of stats
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 24) {
+                BigStat(value: "\(store.totalWords)", label: "Total Words")
+                BigStat(value: "\(store.totalMastered)", label: "Mastered")
+                BigStat(value: "\(store.totalReviews)", label: "Total Reviews")
+                BigStat(value: "\(Int(store.overallAccuracy * 100))%", label: "Accuracy")
+            }
+        }
+        .padding(.bottom, 28)
+        .opacity(appear ? 1 : 0)
+        .offset(y: appear ? 0 : 10)
+        .animation(.easeOut(duration: 0.38).delay(0.10), value: appear)
+    }
+
+    // MARK: - Mastery Breakdown
+
+    private var masteryBreakdown: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Mastery")
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
+                .kerning(1.2)
+
+            ForEach(MasteryLevel.allCases, id: \.self) { level in
+                let count = store.words.filter { $0.masteryLevel == level }.count
+                MasteryRow(level: level, count: count, total: store.totalWords)
+            }
+        }
+        .padding(.bottom, 28)
+        .opacity(appear ? 1 : 0)
+        .offset(y: appear ? 0 : 10)
+        .animation(.easeOut(duration: 0.38).delay(0.14), value: appear)
+    }
+
+    // MARK: - Streak
+
+    private var streakSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Streak")
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
+                .kerning(1.2)
+
+            HStack(spacing: 0) {
+                BigStat(value: "\(store.currentStreak)", label: "Current")
+                Spacer()
+                BigStat(value: "\(store.longestStreak)", label: "Best")
+                Spacer()
+                BigStat(value: "\(store.dailyGoal)", label: "Daily Goal")
+            }
+        }
+        .opacity(appear ? 1 : 0)
+        .offset(y: appear ? 0 : 10)
+        .animation(.easeOut(duration: 0.38).delay(0.18), value: appear)
+    }
+}
+
+// MARK: - Big Stat
+
+private struct BigStat: View {
+    let value: String
+    let label: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(value)
+                .font(.system(size: 34, weight: .bold))
+                .foregroundColor(AppTheme.text)
+                .monospacedDigit()
+            Text(label.uppercased())
+                .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                .foregroundColor(AppTheme.textTertiary)
+                .kerning(0.8)
+        }
+    }
+}
+
+// MARK: - Mastery Row
+
+private struct MasteryRow: View {
+    let level: MasteryLevel
+    let count: Int
+    let total: Int
+
+    private var fraction: Double {
+        total > 0 ? Double(count) / Double(total) : 0
+    }
+
+    private var dotColor: Color {
+        switch level {
+        case .new:       return AppTheme.border
+        case .learning:  return CardPalette.skyBlue
+        case .reviewing: return CardPalette.peach
+        case .mastered:  return CardPalette.mint
         }
     }
 
-    private let motivationalQuotes: [String] = [
-        "The limits of my language mean the limits of my world. — Wittgenstein",
-        "One language sets you in a corridor for life. Two languages open every door along the way. — Frank Smith",
-        "Learn a language and you'll avoid a war. — Arab proverb",
-        "The more languages you know, the more you are human. — Tomáš Masaryk",
-        "You can never understand one language until you understand at least two. — Geoffrey Willans",
-        "A different language is a different vision of life. — Federico Fellini",
-        "Words are, of course, the most powerful drug used by mankind. — Rudyard Kipling",
-        "Every word was once a poem. — Ralph Waldo Emerson",
-        "The pen is mightier than the sword. — Edward Bulwer-Lytton",
-        "In the beginning was the Word. — John 1:1",
-        "Vocabulary is the one area of verbal intelligence that you can improve the most in the least time. — Unknown",
-        "The difference between the right word and the almost right word is the difference between lightning and a lightning bug. — Mark Twain",
-        "Words can inspire, words can destroy. Choose yours carefully. — Robin Sharma",
-        "Words are a lens to focus one's mind. — Ayn Rand",
-        "Language is the dress of thought. — Samuel Johnson"
-    ]
+    var body: some View {
+        HStack(spacing: 12) {
+            // Dot indicator
+            Circle()
+                .fill(dotColor)
+                .frame(width: 8, height: 8)
+
+            // Label
+            Text(level.rawValue)
+                .font(.system(size: 14, weight: .regular))
+                .foregroundColor(AppTheme.text)
+                .frame(width: 80, alignment: .leading)
+
+            // Bar
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(AppTheme.separator)
+                        .frame(height: 3)
+
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(dotColor)
+                        .frame(width: geo.size.width * fraction, height: 3)
+                        .animation(.easeOut(duration: 0.5), value: fraction)
+                }
+            }
+            .frame(height: 3)
+
+            // Count
+            Text("\(count)")
+                .font(.system(size: 13, weight: .medium, design: .monospaced))
+                .foregroundColor(AppTheme.textSecondary)
+                .frame(width: 28, alignment: .trailing)
+        }
+    }
 }
