@@ -141,7 +141,7 @@ struct CardStackView: View {
                     Rectangle()
                         .fill(CardPalette.cardText.opacity(0.12))
                         .frame(height: 1.5)
-                    let w = words.count > 0 ? geo.size.width * Double(currentIndex) / Double(words.count) : 0
+                    let w: CGFloat = words.count > 0 ? geo.size.width * CGFloat(currentIndex) / CGFloat(words.count) : 0
                     Rectangle()
                         .fill(CardPalette.cardText.opacity(0.45))
                         .frame(width: w, height: 1.5)

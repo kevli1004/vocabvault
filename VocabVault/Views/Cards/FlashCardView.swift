@@ -21,7 +21,7 @@ struct FlashCardView: View {
     private var cardColor: Color { CardPalette.color(for: word.category) }
 
     // How far dragged (0–1) and direction
-    private var dragProgress: Double { min(abs(offset.width) / 120.0, 1.0) }
+    private var dragProgress: Double { min(Double(abs(offset.width)) / 120.0, 1.0) }
     private var dragDirection: SwipeDirection? {
         if offset.width > 30  { return .right }
         if offset.width < -30 { return .left  }
@@ -161,13 +161,13 @@ struct FlashCardView: View {
         HStack {
             // Left: "Hard" hint
             swipeLabel("Hard", systemImage: "xmark", color: .swipeLeft)
-                .opacity(offset.width < -20 ? Double((-offset.width - 20) / 60).clamped(to: 0...1) : 0)
+                .opacity(offset.width < -20 ? (Double(-offset.width - 20) / 60.0).clamped(to: 0.0...1.0) : 0)
 
             Spacer()
 
             // Right: "Got it" hint
             swipeLabel("Got it", systemImage: "checkmark", color: .swipeRight)
-                .opacity(offset.width > 20 ? Double((offset.width - 20) / 60).clamped(to: 0...1) : 0)
+                .opacity(offset.width > 20 ? (Double(offset.width - 20) / 60.0).clamped(to: 0.0...1.0) : 0)
         }
         .padding(.horizontal, 36)
         .padding(.top, 60)
@@ -203,7 +203,7 @@ struct FlashCardView: View {
                 }
                 let translation = value.translation
                 offset = translation
-                rotation = Double(translation.width / 20).clamped(to: -12...12)
+                rotation = (Double(translation.width) / 20.0).clamped(to: -12.0...12.0)
             }
             .onEnded { value in
                 let threshold: CGFloat = 100
