@@ -147,7 +147,7 @@ struct QuizView: View {
             }
             .buttonStyle(.plain)
             .padding(.horizontal, 28)
-            .padding(.bottom, 48)
+            .padding(.bottom, 100)
         }
     }
 

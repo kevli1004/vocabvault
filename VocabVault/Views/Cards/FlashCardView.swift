@@ -56,8 +56,8 @@ struct FlashCardView: View {
                 cardBottomActions
             }
             .padding(.horizontal, 32)
-            .padding(.top, 20)
-            .padding(.bottom, 32)
+            .padding(.top, 96) // Clear floating chrome overlay
+            .padding(.bottom, 100) // Clear tab bar
 
             // Swipe hint labels
             swipeHints

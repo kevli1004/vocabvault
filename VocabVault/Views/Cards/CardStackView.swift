@@ -71,18 +71,15 @@ struct CardStackView: View {
         if words.isEmpty {
             emptyState
         } else {
-            VStack(spacing: 0) {
-                // Top chrome: filter + progress
-                topChrome
-
-                // Card area (takes all remaining space)
+            ZStack(alignment: .top) {
+                // Full-bleed card layer (current card fills entire screen)
                 ZStack {
-                    // Ghost card behind (next word preview)
+                    // Ghost card peeking (tint of next word's color)
                     if let next = nextWord {
                         nextCardPreview(word: next)
                     }
 
-                    // Current card (full screen)
+                    // Current card
                     if let word = currentWord {
                         FlashCardView(
                             word: word,
@@ -97,19 +94,23 @@ struct CardStackView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .ignoresSafeArea()
+
+                // Floating chrome overlay at the top
+                topChrome
             }
         }
     }
 
-    // MARK: - Top Chrome
+    // MARK: - Top Chrome (floats over card, adapts color)
 
     private var topChrome: some View {
         VStack(spacing: 10) {
             HStack(alignment: .center) {
                 // Progress counter
                 Text("\(currentIndex) / \(words.count)")
-                    .font(.system(size: 13, weight: .medium, design: .monospaced))
-                    .foregroundColor(AppTheme.textSecondary)
+                    .font(.system(size: 12, weight: .medium, design: .monospaced))
+                    .foregroundColor(CardPalette.cardText.opacity(0.55))
 
                 Spacer()
 
@@ -122,24 +123,35 @@ struct CardStackView: View {
                         }
                     }
                 } label: {
-                    HStack(spacing: 5) {
+                    HStack(spacing: 4) {
                         Text(filterMode.rawValue)
-                            .font(.system(size: 13, weight: .medium))
-                            .foregroundColor(AppTheme.textSecondary)
+                            .font(.system(size: 12, weight: .medium))
                         Image(systemName: "chevron.down")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundColor(AppTheme.textTertiary)
+                            .font(.system(size: 9, weight: .semibold))
                     }
+                    .foregroundColor(CardPalette.cardText.opacity(0.55))
                 }
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 16)
+            .padding(.horizontal, 28)
+            .padding(.top, 58) // Clear status bar
 
             // Thin progress bar
-            ThinProgressBar(current: currentIndex, total: words.count, height: 1.5)
-                .padding(.horizontal, 24)
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Rectangle()
+                        .fill(CardPalette.cardText.opacity(0.12))
+                        .frame(height: 1.5)
+                    let w = words.count > 0 ? geo.size.width * Double(currentIndex) / Double(words.count) : 0
+                    Rectangle()
+                        .fill(CardPalette.cardText.opacity(0.45))
+                        .frame(width: w, height: 1.5)
+                        .animation(.easeOut(duration: 0.3), value: currentIndex)
+                }
+            }
+            .frame(height: 1.5)
+            .padding(.horizontal, 28)
         }
-        .background(AppTheme.background)
+        .ignoresSafeArea(edges: .top)
     }
 
     // MARK: - Next Card Preview
