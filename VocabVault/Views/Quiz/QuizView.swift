@@ -303,7 +303,7 @@ struct QuizView: View {
 
         // Advance after delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.1) {
-            advanceQuestion(answer: answer)
+            advanceQuestion(answer)
         }
     }
 

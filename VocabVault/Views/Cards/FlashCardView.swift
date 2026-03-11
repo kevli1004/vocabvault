@@ -94,7 +94,7 @@ struct FlashCardView: View {
 
     // MARK: - Gestures
 
-    private var dragGesture: DragGesture {
+    private var dragGesture: some Gesture {
         DragGesture(minimumDistance: 8)
             .onChanged { value in
                 // Only horizontal drag
@@ -122,7 +122,7 @@ struct FlashCardView: View {
             }
     }
 
-    private var longPressGesture: LongPressGesture {
+    private var longPressGesture: some Gesture {
         LongPressGesture(minimumDuration: 0.6)
             .onEnded { _ in
                 withAnimation(.spring()) {
