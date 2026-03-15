@@ -1,15 +1,16 @@
 import SwiftUI
 
-// MARK: - Tab Identifier (3 tabs only)
+// MARK: - Tab Identifier (4 tabs)
 
 enum AppTab: Int, CaseIterable {
     case browse   = 0
     case practice = 1
-    case stats    = 2
+    case quiz     = 2
+    case stats    = 3
 }
 
 // MARK: - Custom Tab Bar
-// Ultra-minimal: three small dots. No labels. Nearly invisible.
+// Ultra-minimal: four small dots. No labels. Nearly invisible.
 
 struct CustomTabBar: View {
     @Binding var selectedTab: AppTab

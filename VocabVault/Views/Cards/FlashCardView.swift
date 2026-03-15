@@ -21,6 +21,7 @@ struct FlashCardView: View {
     let word: Word
     let cardIndex: Int
     let onSwipe: (SwipeDirection) -> Void
+    var onFavoriteToggle: (() -> Void)? = nil
 
     @State private var offset: CGSize = .zero
     @State private var rotation: Double = 0
@@ -75,6 +76,10 @@ struct FlashCardView: View {
             if abs(offset.width) < 5 {
                 withAnimation(.easeInOut(duration: 0.28)) { revealed.toggle() }
             }
+        }
+        .onLongPressGesture(minimumDuration: 0.5) {
+            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+            onFavoriteToggle?()
         }
     }
 

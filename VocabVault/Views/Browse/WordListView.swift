@@ -7,6 +7,7 @@ struct WordListView: View {
     @EnvironmentObject var store: WordStore
     @State private var searchText: String = ""
     @State private var selectedCategory: WordCategory? = nil
+    @State private var showFavoritesOnly: Bool = false
     @State private var sortMode: SortMode = .alphabetical
     @State private var appear = false
 
@@ -29,6 +30,11 @@ struct WordListView: View {
                 $0.word.lowercased().contains(q) ||
                 $0.definition.lowercased().contains(q)
             }
+        }
+
+        // Favorites filter
+        if showFavoritesOnly {
+            words = words.filter { $0.isFavorite }
         }
 
         // Category filter
@@ -144,8 +150,15 @@ struct WordListView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 // "All" chip
-                FilterChip(label: "All", isActive: selectedCategory == nil) {
+                FilterChip(label: "All", isActive: selectedCategory == nil && !showFavoritesOnly) {
                     selectedCategory = nil
+                    showFavoritesOnly = false
+                }
+
+                // Favorites chip
+                FilterChip(label: "♡ Favorites", isActive: showFavoritesOnly) {
+                    showFavoritesOnly.toggle()
+                    if showFavoritesOnly { selectedCategory = nil }
                 }
 
                 ForEach(WordCategory.allCases, id: \.self) { cat in
@@ -154,6 +167,7 @@ struct WordListView: View {
                         isActive: selectedCategory == cat
                     ) {
                         selectedCategory = selectedCategory == cat ? nil : cat
+                        showFavoritesOnly = false
                     }
                 }
             }

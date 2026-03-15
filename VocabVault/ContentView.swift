@@ -1,7 +1,7 @@
 import SwiftUI
 
 // MARK: - Content View (Root)
-// Three tabs: Browse, Practice, Stats. No popups, no sheets, no toasts.
+// Four tabs: Browse, Practice, Quiz, Stats. No popups, no sheets, no toasts.
 
 struct ContentView: View {
     @StateObject private var store = WordStore()
@@ -13,6 +13,7 @@ struct ContentView: View {
                 switch selectedTab {
                 case .browse:   BrowseTab()
                 case .practice: PracticeTab()
+                case .quiz:     QuizTab()
                 case .stats:    StatsTab()
                 }
             }
@@ -48,6 +49,17 @@ private struct PracticeTab: View {
 
     var body: some View {
         CardStackView()
+            .environmentObject(store)
+    }
+}
+
+// MARK: - Quiz Tab
+
+private struct QuizTab: View {
+    @EnvironmentObject var store: WordStore
+
+    var body: some View {
+        QuizView()
             .environmentObject(store)
     }
 }

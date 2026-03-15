@@ -69,13 +69,35 @@ struct CardStackView: View {
                     FlashCardView(
                         word: word,
                         cardIndex: currentIndex,
-                        onSwipe: handleSwipe
+                        onSwipe: handleSwipe,
+                        onFavoriteToggle: {
+                            store.toggleFavorite(wordId: word.id)
+                        }
                     )
                     .id(cardKey)
                     .transition(.asymmetric(
                         insertion: .move(edge: .bottom).combined(with: .opacity),
                         removal: .opacity
                     ))
+                }
+
+                // Ultra-thin progress line at very top (1px)
+                if !words.isEmpty {
+                    VStack {
+                        GeometryReader { geo in
+                            let fraction = words.count > 0
+                                ? CGFloat(currentIndex) / CGFloat(words.count)
+                                : 0
+                            Rectangle()
+                                .fill(Color.white.opacity(0.3))
+                                .frame(width: geo.size.width * fraction, height: 1)
+                                .animation(.easeOut(duration: 0.3), value: currentIndex)
+                        }
+                        .frame(height: 1)
+                        Spacer()
+                    }
+                    .ignoresSafeArea()
+                    .allowsHitTesting(false)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
