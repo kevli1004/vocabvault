@@ -205,7 +205,7 @@ struct WordListView: View {
                     emptyState
                 } else {
                     ForEach(Array(filteredWords.enumerated()), id: \.element.id) { i, word in
-                        NavigationLink(destination: CardDetailView(word: word).environmentObject(store)) {
+                        NavigationLink(destination: CardDetailView(word: word)) {
                             WordRow(word: word)
                         }
                         .buttonStyle(.plain)
